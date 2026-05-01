@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komorebi Learning - Amel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            background-color: #0f1115;
+            color: white;
+            transition: background-color 0.5s ease;
+        }
+
+        .light-mode {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .light-mode .glass {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        /* Tab Transitions (Rolling/Slide Effect) */
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - 120px);
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .page.slide-out-left {
+            transform: translateX(-20px);
+            opacity: 0;
+        }
+
+        /* Glow Animations */
+        .pink-glow {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Background blur elements */
+        .bg-decor {
+            position: fixed;
+            z-index: -1;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .decor-1 { top: -10%; right: -20%; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.1); }
+        .decor-2 { bottom: 10%; left: -20%; width: 350px; height: 350px; background: rgba(139, 92, 246, 0.1); }
+
+        /* Input field focus */
+        input:focus {
+            border-color: #ec4899 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decoration -->
+    <div class="bg-decor decor-1"></div>
+    <div class="bg-decor decor-2"></div>
+
+    <div class="max-w-md mx-auto min-h-screen relative px-6 pt-8 pb-32">
+        <!-- Notification Pop-up -->
+        <div id="notification" class="fixed top-8 left-1/2 -translate-x-1/2 z-[100] opacity-0 pointer-events-none transition-all duration-500">
+            <div class="glass px-8 py-3 rounded-full font-black text-sm flex items-center gap-2">
+                <i data-lucide="sparkles" class="text-yellow-400 w-4 h-4"></i>
+                <span id="notification-text">Saved!</span>
+            </div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black tracking-tight bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+                    Okaeri, Amel!
+                </h1>
+                <p class="text-xs font-medium opacity-50 flex items-center gap-1 mt-1">
+                    <i data-lucide="zap" class="text-yellow-500 w-3 h-3 fill-yellow-500"></i> Mari buat progres baru hari ini!
+                </p>
+            </div>
+            <button onclick="toggleTheme()" class="glass p-3 rounded-2xl transition-all active:scale-90">
+                <i id="theme-icon" data-lucide="sun" class="text-yellow-400 w-5 h-5"></i>
+            </button>
+        </header>
+
+        <div class="page-container">
+            <!-- HOME PAGE -->
+            <div id="home" class="page active">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="glass p-5 rounded-[2.5rem]">
+                        <i data-lucide="flame" class="text-orange-500 mb-2 w-6 h-6"></i>
+                        <div class="text-2xl font-black">1</div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider opacity-40">Day Streak</div>
+                    </div>
+                    <div class="glass p-5 rounded-[2.5rem]">
+                        <i data-lucide="trophy" class="text-yellow-500 mb-2 w-6 h-6"></i>
+                        <div id="card-count" class="text-2xl font-black">0</div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider opacity-40">Flashcards</div>
+                    </div>
+                </div>
+
+                <div onclick="navigate('review')" class="group relative cursor-pointer active:scale-[0.98] transition-transform duration-300 mb-8">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 to-purple-600 rounded-[2.6rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="glass relative p-8 rounded-[2.5rem] overflow-hidden">
+                        <div class="absolute top-0 right-0 -mr-4 -mt-4 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl"></div>
+                        <h2 class="text-2xl font-black mb-1">Mulai Belajar</h2>
+                        <p class="text-sm opacity-60 mb-6 max-w-[200px]">Ulas kembali materi yang sudah Amel simpan.</p>
+                        <div class="flex items-center gap-2 text-pink-500 font-bold text-sm">
+                            Review Sekarang <i data-lucide="chevron-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-30 mb-4">Target Belajar</h3>
+                <div class="glass p-4 rounded-[2rem] flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-500">
+                        <i data-lucide="message-square" class="w-6 h-6"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold">Percakapan Sehari-hari</h4>
+                        <p class="text-[10px] opacity-50">Latihan ekspresi natural Jepang</p>
+                    </div>
+                    <div class="text-[10px] font-black bg-indigo-500/10 text-indigo-500 px-2 py-1 rounded-lg">ACTIVE</div>
+                </div>
+            </div>
+
+            <!-- ADD PAGE -->
+            <div id="add" class="page">
+                <h1 class="text-3xl font-black mb-2">Tambah Materi</h1>
+                <p class="text-sm opacity-50 mb-6">Masukkan kosa kata baru untuk dipelajari.</p>
+                
+                <div class="glass p-6 rounded-[2.5rem] space-y-5">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest opacity-40 ml-2">Bahasa Jepang</label>
+                        <input id="input-jp" type="text" placeholder="Contoh: 友達 (Tomodachi)" 
+                            class="w-full p-4 rounded-2xl outline-none border bg-transparent border-white/10 focus:border-pink-500 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest opacity-40 ml-2">Cara Baca</label>
+                        <input id="input-reading" type="text" placeholder="Hiragana atau Romaji" 
+                            class="w-full p-4 rounded-2xl outline-none border bg-transparent border-white/10 focus:border-pink-500 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest opacity-40 ml-2">Arti Indonesia</label>
+                        <input id="input-id" type="text" placeholder="Contoh: Teman" 
+                            class="w-full p-4 rounded-2xl outline-none border bg-transparent border-white/10 focus:border-pink-500 transition-all">
+                    </div>
+                    <button onclick="saveCard()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-lg active:scale-95 transition-all shadow-lg shadow-pink-500/25">
+                        Simpan Sekarang
+                    </button>
+                </div>
+            </div>
+
+            <!-- PLACEHOLDERS FOR OTHER PAGES -->
+            <div id="review" class="page text-center pt-20">
+                <div class="glass p-10 rounded-[2.5rem] inline-block">
+                    <i data-lucide="book-open" class="w-12 h-12 mx-auto mb-4 text-pink-500"></i>
+                    <h2 class="text-xl font-black">Mode Review</h2>
+                    <p class="text-sm opacity-50">Sistem SRS sedang di-tuning...</p>
+                </div>
+                <button onclick="navigate('home')" class="block mx-auto mt-6 text-pink-500 font-bold">Kembali</button>
+            </div>
+
+            <div id="quiz" class="page text-center pt-20">
+                <div class="glass p-10 rounded-[2.5rem] inline-block">
+                    <i data-lucide="brain" class="w-12 h-12 mx-auto mb-4 text-purple-500"></i>
+                    <h2 class="text-xl font-black">Latihan AI</h2>
+                    <p class="text-sm opacity-50">Uji kemampuan bahasa Jepangmu!</p>
+                </div>
+                <button onclick="navigate('home')" class="block mx-auto mt-6 text-pink-500 font-bold">Kembali</button>
+            </div>
+
+            <div id="stats" class="page text-center pt-20">
+                <div class="glass p-10 rounded-[2.5rem] inline-block">
+                    <i data-lucide="bar-chart-2" class="w-12 h-12 mx-auto mb-4 text-indigo-500"></i>
+                    <h2 class="text-xl font-black">Statistik Amel</h2>
+                    <p class="text-sm opacity-50">Pantau kemajuan belajarmu.</p>
+                </div>
+                <button onclick="navigate('home')" class="block mx-auto mt-6 text-pink-500 font-bold">Kembali</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] z-50">
+            <div class="glass rounded-[2rem] h-20 flex items-center px-2">
+                <button onclick="navigate('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center gap-1 flex-1 transition-all text-pink-500">
+                    <i data-lucide="home" class="w-5 h-5 transition-transform duration-300 scale-125"></i>
+                    <span class="text-[9px] font-bold uppercase">Home</span>
+                    <div class="dot absolute -top-2 w-1 h-1 bg-pink-500 rounded-full shadow-pink-glow"></div>
+                </button>
+                <button onclick="navigate('review')" id="nav-review" class="nav-btn flex flex-col items-center justify-center gap-1 flex-1 transition-all text-gray-500">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-bold uppercase opacity-50">Review</span>
+                </button>
+                <div class="relative -top-6">
+                    <button onclick="navigate('add')" class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-[0_8px_20px_rgba(236,72,153,0.4)] active:scale-90 transition-transform">
+                        <i data-lucide="plus-circle" class="w-8 h-8"></i>
+                    </button>
+                </div>
+                <button onclick="navigate('quiz')" id="nav-quiz" class="nav-btn flex flex-col items-center justify-center gap-1 flex-1 transition-all text-gray-500">
+                    <i data-lucide="brain" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-bold uppercase opacity-50">Quiz</span>
+                </button>
+                <button onclick="navigate('stats')" id="nav-stats" class="nav-btn flex flex-col items-center justify-center gap-1 flex-1 transition-all text-gray-500">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-bold uppercase opacity-50">Stats</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // --- State Management ---
+        let currentTab = 'home';
+        let cards = JSON.parse(localStorage.getItem('amel_cards') || '[]');
+        let isDarkMode = true;
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        updateCardCount();
+
+        // --- Navigation Logic ---
+        function navigate(tabId) {
+            if (tabId === currentTab) return;
+
+            // Page transitions
+            const currentPg = document.getElementById(currentTab);
+            const nextPg = document.getElementById(tabId);
+
+            currentPg.classList.add('slide-out-left');
+            currentPg.classList.remove('active');
+
+            setTimeout(() => {
+                currentPg.classList.remove('slide-out-left');
+                nextPg.classList.add('active');
+            }, 50);
+
+            // Update Nav Icons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-pink-500');
+                btn.classList.add('text-gray-500');
+                btn.querySelector('i').classList.remove('scale-125');
+                const dot = btn.querySelector('.dot');
+                if (dot) dot.remove();
+            });
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('text-pink-500');
+                activeNav.classList.remove('text-gray-500');
+                activeNav.querySelector('i').classList.add('scale-125');
+                const dot = document.createElement('div');
+                dot.className = 'dot absolute -top-2 w-1 h-1 bg-pink-500 rounded-full shadow-pink-glow';
+                activeNav.appendChild(dot);
+            }
+
+            currentTab = tabId;
+        }
+
+        // --- Theme Logic ---
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('theme-icon');
+            icon.setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+
+        // --- Data Logic ---
+        function saveCard() {
+            const jp = document.getElementById('input-jp').value;
+            const reading = document.getElementById('input-reading').value;
+            const id = document.getElementById('input-id').value;
+
+            if (!jp || !id) {
+                showNotify("Wajib isi Kata & Arti!", "alert-triangle");
+                return;
+            }
+
+            const newCard = { jp, reading, id, date: new Date().toISOString() };
+            cards.push(newCard);
+            localStorage.setItem('amel_cards', JSON.stringify(cards));
+
+            // Reset inputs
+            document.getElementById('input-jp').value = '';
+            document.getElementById('input-reading').value = '';
+            document.getElementById('input-id').value = '';
+
+            showNotify("Manifestasi Berhasil! ✨");
+            updateCardCount();
+            setTimeout(() => navigate('home'), 1000);
+        }
+
+        function updateCardCount() {
+            document.getElementById('card-count').innerText = cards.length;
+        }
+
+        function showNotify(msg) {
+            const toast = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            text.innerText = msg;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 0)';
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -10px)';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+  
