@@ -9,356 +9,508 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-primary: #ec4899;
-            --purple-primary: #8b5cf6;
-            --transition-speed: 0.3s;
+            --pink: #ec4899;
+            --purple: #8b5cf6;
+            --bg-dark: #0d0f12;
+            --bg-light: #f3f4f6;
+            --glass-dark: rgba(255, 255, 255, 0.03);
+            --glass-light: rgba(0, 0, 0, 0.05);
         }
 
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background-color: #0f1115;
+            background-color: var(--bg-dark);
             color: white;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body.light-mode {
-            background-color: #f8fafc;
-            color: #0f172a;
+            background-color: var(--bg-light);
+            color: #1f2937;
         }
 
-        /* Glassmorphism Refined */
         .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--glass-dark);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
         }
 
-        .light-mode .glass {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        body.light-mode .glass {
+            background: var(--glass-light);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        /* Anti-Overlap Page System */
+        /* Page System */
         .page {
-            display: none; /* Sembunyikan total halaman yang tidak aktif */
+            display: none;
             opacity: 0;
             transform: translateY(10px);
-            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
         .page.active {
-            display: block; /* Hanya tampilkan satu halaman aktif */
+            display: block;
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Nav Bar Mobile Optimized */
-        .nav-container {
-            height: 70px;
-        }
-
+        /* Navigation Style - Glowing Effect */
         .nav-btn {
             position: relative;
-            transition: color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(150, 150, 150, 0.2); /* Awalnya mati (dim) */
+        }
+        
+        body.light-mode .nav-btn {
+            color: rgba(0, 0, 0, 0.15);
         }
 
-        .nav-btn.active {
-            color: var(--pink-primary);
+        .nav-btn i {
+            filter: drop-shadow(0 0 0 rgba(236, 72, 153, 0));
+            transition: all 0.3s ease;
         }
 
-        .nav-btn .dot {
-            position: absolute;
-            bottom: -8px;
-            width: 4px;
-            height: 4px;
-            background: var(--pink-primary);
-            border-radius: 50%;
-            display: none;
+        /* Active State with Glow like Home Menu */
+        .nav-btn.nav-active {
+            color: var(--pink) !important;
+        }
+        .nav-btn.nav-active i {
+            filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.9));
+            transform: scale(1.15);
         }
 
-        .nav-btn.active .dot {
-            display: block;
-            box-shadow: 0 0 10px var(--pink-primary);
+        /* Plus Button - Anti-Cut and Floating Glow */
+        .plus-container {
+            position: relative;
+            z-index: 100;
+            margin-top: -28px;
         }
-
-        /* Floating Plus Button Fix */
         .plus-btn {
-            width: 56px;
-            height: 56px;
-            margin-top: -30px;
-            z-index: 60;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            transition: all 0.3s ease;
+        }
+        .plus-btn:active {
+            transform: scale(0.9) translateY(2px);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
         }
 
-        /* Background blur elements */
+        /* Flashcard Flip */
+        .flip-card-inner {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+
+        /* Quiz Buttons */
+        .quiz-opt {
+            transition: all 0.2s ease;
+        }
+        .quiz-opt:active {
+            transform: scale(0.96);
+        }
+
+        /* Background Decor */
         .bg-decor {
             position: fixed;
             z-index: -1;
             border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.3;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
         }
-        .decor-1 { top: -5%; right: -10%; width: 200px; height: 200px; background: var(--pink-primary); }
-        .decor-2 { bottom: 10%; left: -10%; width: 250px; height: 250px; background: var(--purple-primary); }
     </style>
 </head>
-<body>
-    <div class="bg-decor decor-1"></div>
-    <div class="bg-decor decor-2"></div>
+<body class="selection:bg-pink-500/30">
+    <div class="bg-decor top-[-10%] right-[-10%] w-64 h-64 bg-pink-600"></div>
+    <div class="bg-decor bottom-[10%] left-[-10%] w-80 h-80 bg-purple-600"></div>
 
-    <div class="max-w-md mx-auto min-h-screen flex flex-col relative px-6 pt-10 pb-24">
+    <div class="max-w-md mx-auto min-h-screen flex flex-col px-6 pt-10 pb-28">
         
-        <!-- Notifikasi -->
-        <div id="notification" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] opacity-0 transition-all duration-300">
-            <div class="glass px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 border border-white/20">
-                <i data-lucide="sparkles" class="text-yellow-400 w-4 h-4"></i>
-                <span id="notification-text">Saved!</span>
-            </div>
-        </div>
-
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-black tracking-tight bg-gradient-to-br from-pink-400 to-purple-500 bg-clip-text text-transparent">
+            <div class="animate-in fade-in duration-700">
+                <h1 class="text-2xl font-black tracking-tight bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
                     Okaeri, Amel!
                 </h1>
-                <p class="text-[10px] font-bold uppercase tracking-widest opacity-40 mt-1 flex items-center gap-1">
-                    <i data-lucide="zap" class="text-yellow-500 w-3 h-3 fill-yellow-500"></i> Daily Progres
-                </p>
+                <p class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase">Nihongo Pro Dashboard</p>
             </div>
-            <button onclick="toggleTheme()" class="glass p-2.5 rounded-xl border border-white/10 active:scale-90 transition-transform">
+            <button onclick="toggleTheme()" class="glass p-2.5 rounded-xl border border-white/5 active:scale-90 transition-transform">
                 <i id="theme-icon" data-lucide="sun" class="text-yellow-400 w-5 h-5"></i>
             </button>
         </header>
 
-        <!-- Main Content Area -->
-        <main class="flex-1">
-            <!-- HOME PAGE -->
-            <div id="home" class="page active">
+        <!-- Main Pages -->
+        <main class="flex-1 relative">
+            
+            <!-- HOME -->
+            <div id="page-home" class="page active">
                 <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="glass p-4 rounded-3xl">
-                        <i data-lucide="flame" class="text-orange-500 mb-1 w-5 h-5"></i>
-                        <div class="text-xl font-black">1</div>
+                    <div class="glass p-5 rounded-[2rem]">
+                        <i data-lucide="zap" class="text-yellow-500 mb-2 w-5 h-5 fill-yellow-500/20"></i>
+                        <div id="home-streak" class="text-2xl font-black tracking-tighter">1</div>
                         <div class="text-[8px] font-bold uppercase opacity-30">Day Streak</div>
                     </div>
-                    <div class="glass p-4 rounded-3xl">
-                        <i data-lucide="book" class="text-indigo-400 mb-1 w-5 h-5"></i>
-                        <div id="card-count" class="text-xl font-black">0</div>
-                        <div class="text-[8px] font-bold uppercase opacity-30">Materi</div>
+                    <div class="glass p-5 rounded-[2rem]">
+                        <i data-lucide="library" class="text-indigo-400 mb-2 w-5 h-5"></i>
+                        <div id="home-total" class="text-2xl font-black tracking-tighter">0</div>
+                        <div class="text-[8px] font-bold uppercase opacity-30">Materials</div>
                     </div>
                 </div>
 
-                <div onclick="navigate('review')" class="glass p-6 rounded-[2.2rem] relative overflow-hidden active:scale-[0.98] transition-transform mb-6">
+                <div onclick="startReview()" class="glass p-8 rounded-[2.5rem] relative overflow-hidden active:scale-[0.98] transition-transform mb-6 cursor-pointer border border-pink-500/10 shadow-lg shadow-pink-500/5">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i data-lucide="sparkles" class="w-16 h-16"></i>
+                        <i data-lucide="sparkles" class="w-12 h-12"></i>
                     </div>
-                    <h2 class="text-xl font-black mb-1">Mulai Belajar</h2>
-                    <p class="text-xs opacity-50 mb-4">Ulas kosa kata yang sudah Amel simpan.</p>
+                    <h2 class="text-2xl font-black mb-1">Mulai Review</h2>
+                    <p class="text-xs opacity-50 mb-6">Latih memori dengan sistem Anki.</p>
                     <div class="text-pink-500 font-bold text-xs flex items-center gap-2">
                         Review Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </div>
                 </div>
 
-                <div class="glass p-4 rounded-[1.8rem] flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
-                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <div onclick="startQuiz()" class="glass p-5 rounded-[1.8rem] flex items-center gap-4 active:scale-[0.98] transition-all cursor-pointer border border-white/5">
+                    <div class="w-10 h-10 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400">
+                        <i data-lucide="brain-circuit" class="w-5 h-5"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-xs font-bold">Ekspresi Natural</h4>
-                        <p class="text-[9px] opacity-40">Cara bicara orang Jepang asli</p>
+                        <h4 class="text-sm font-bold">Kuis JLPT</h4>
+                        <p class="text-[9px] opacity-40">Uji Kanji, Hiragana & Arti.</p>
                     </div>
                     <i data-lucide="chevron-right" class="w-4 h-4 opacity-20"></i>
                 </div>
             </div>
 
-            <!-- ADD PAGE -->
-            <div id="add" class="page">
-                <h2 class="text-2xl font-black mb-1">Tambah Materi</h2>
-                <p class="text-[10px] font-bold opacity-30 uppercase tracking-widest mb-6">Input New Vocabulary</p>
-                
-                <div class="glass p-6 rounded-[2.2rem] space-y-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-2">Bahasa Jepang</label>
-                        <input id="input-jp" type="text" placeholder="例：友達" 
-                            class="w-full p-3.5 rounded-xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-colors">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-2">Cara Baca</label>
-                        <input id="input-reading" type="text" placeholder="例：Tomodachi" 
-                            class="w-full p-3.5 rounded-xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-colors">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-2">Arti Indonesia</label>
-                        <input id="input-id" type="text" placeholder="Contoh: Teman" 
-                            class="w-full p-3.5 rounded-xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-colors">
-                    </div>
-                    <button onclick="saveCard()" class="w-full py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase tracking-widest active:scale-[0.97] transition-all shadow-lg shadow-pink-500/20">
-                        Simpan Materi
+            <!-- REVIEW (ANKI) -->
+            <div id="page-review" class="page">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="navigate('home')" class="text-[10px] font-bold opacity-30 flex items-center gap-1">
+                        <i data-lucide="arrow-left" class="w-3 h-3"></i> KEMBALI
                     </button>
-                    <button onclick="navigate('home')" class="w-full text-center text-xs font-bold opacity-40 py-2">Kembali</button>
+                    <span id="rev-prog" class="text-[10px] font-black opacity-30">0 / 0</span>
+                </div>
+
+                <div class="relative h-72 w-full perspective-1000">
+                    <div id="flip-inner" class="flip-card-inner relative w-full h-full cursor-pointer" onclick="flipCard()">
+                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center border border-white/10 shadow-xl">
+                            <h2 id="rev-front" class="text-4xl font-black mb-4 tracking-tighter">---</h2>
+                            <p class="text-[9px] opacity-20 font-bold tracking-[0.2em] mt-10">TAP UNTUK LIHAT ARTI</p>
+                        </div>
+                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center bg-white/5 border border-pink-500/30 shadow-2xl shadow-pink-500/10" style="transform: rotateY(180deg);">
+                            <h3 id="rev-back-id" class="text-2xl font-black mb-2">---</h3>
+                            <p id="rev-back-read" class="text-sm opacity-50 italic font-medium">---</p>
+                            <p class="text-[8px] opacity-20 font-bold tracking-[0.2em] mt-6 uppercase">Terjemahan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rev-btns" class="hidden mt-10 grid grid-cols-2 gap-4 animate-in slide-in-from-bottom-4">
+                    <button onclick="reviewAction(false)" class="glass py-4 rounded-2xl text-red-500 font-black text-xs uppercase tracking-widest active:scale-95 transition-all">Lupa</button>
+                    <button onclick="reviewAction(true)" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 rounded-2xl text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-pink-500/20 active:scale-95 transition-all">Ingat</button>
                 </div>
             </div>
 
-            <!-- REVIEW PAGE -->
-            <div id="review" class="page text-center pt-10">
-                <div class="glass p-8 rounded-[2.2rem] inline-block w-full">
-                    <i data-lucide="book-open" class="w-10 h-10 mx-auto mb-3 text-pink-500"></i>
-                    <h2 class="text-xl font-black">Mode Review</h2>
-                    <p class="text-xs opacity-50 mb-6 uppercase tracking-widest">Akan segera hadir</p>
-                    <button onclick="navigate('home')" class="text-pink-500 font-black text-sm">Kembali</button>
+            <!-- ADD CARD -->
+            <div id="page-add" class="page">
+                <h2 class="text-2xl font-black mb-1">Tambah Materi</h2>
+                <p class="text-[10px] font-bold opacity-30 uppercase tracking-widest mb-8">Koleksi kosa kata baru</p>
+                
+                <div class="glass p-6 rounded-[2.5rem] space-y-5 shadow-xl">
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Bahasa Jepang (Kanji)</label>
+                        <input id="in-jp" type="text" placeholder="例：友達" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Hiragana / Romaji</label>
+                        <input id="in-read" type="text" placeholder="例：ともだち" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Arti (Indonesia)</label>
+                        <input id="in-id" type="text" placeholder="例：Teman" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                    </div>
+                    <button onclick="saveCard()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-pink-500/20 mt-4">Simpan Kartu</button>
                 </div>
             </div>
 
-            <!-- QUIZ PAGE -->
-            <div id="quiz" class="page text-center pt-10">
-                <div class="glass p-8 rounded-[2.2rem] inline-block w-full">
-                    <i data-lucide="brain" class="w-10 h-10 mx-auto mb-3 text-purple-400"></i>
-                    <h2 class="text-xl font-black">Latihan AI</h2>
-                    <p class="text-xs opacity-50 mb-6 uppercase tracking-widest">Akan segera hadir</p>
-                    <button onclick="navigate('home')" class="text-pink-500 font-black text-sm">Kembali</button>
+            <!-- QUIZ (JLPT STYLE) -->
+            <div id="page-quiz" class="page">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="navigate('home')" class="text-[10px] font-bold opacity-30 flex items-center gap-1">
+                        <i data-lucide="x" class="w-3 h-3"></i> BATAL
+                    </button>
+                    <span id="quiz-prog-text" class="text-[10px] font-black opacity-40">SOAL 1</span>
+                </div>
+
+                <div class="glass p-10 rounded-[2.5rem] text-center mb-8 border border-white/5 shadow-inner">
+                    <span id="q-type-label" class="text-[8px] font-bold opacity-30 block mb-4 uppercase tracking-[0.3em]">Cek Arti</span>
+                    <h2 id="q-text" class="text-4xl font-black">---</h2>
+                </div>
+
+                <div id="q-options" class="space-y-3">
+                    <!-- Dynamic buttons -->
                 </div>
             </div>
 
-            <!-- STATS PAGE -->
-            <div id="stats" class="page text-center pt-10">
-                <div class="glass p-8 rounded-[2.2rem] inline-block w-full">
-                    <i data-lucide="bar-chart-2" class="w-10 h-10 mx-auto mb-3 text-indigo-400"></i>
-                    <h2 class="text-xl font-black">Statistik Amel</h2>
-                    <p class="text-xs opacity-50 mb-6 leading-relaxed">Pantau kemajuan belajarmu setiap hari.</p>
-                    <button onclick="navigate('home')" class="text-pink-500 font-black text-sm">Kembali</button>
+            <!-- STATS -->
+            <div id="page-stats" class="page">
+                <h2 class="text-2xl font-black mb-8 text-center">Analisis Belajar</h2>
+                <div class="space-y-4">
+                    <div class="glass p-6 rounded-[2rem] flex justify-between items-center shadow-lg">
+                        <span class="text-xs font-bold opacity-40 uppercase tracking-widest">Total Koleksi</span>
+                        <span id="stat-total" class="text-2xl font-black">0</span>
+                    </div>
+                    <div class="glass p-6 rounded-[2rem] flex justify-between items-center border-l-4 border-pink-500 shadow-lg">
+                        <span class="text-xs font-bold opacity-40 uppercase tracking-widest">Sudah Hafal</span>
+                        <span id="stat-master" class="text-2xl font-black">0</span>
+                    </div>
+                    <button onclick="resetData()" class="w-full text-[9px] font-bold uppercase tracking-[0.4em] text-red-500/30 mt-16 hover:text-red-500 transition-colors">Hapus Semua Data</button>
                 </div>
             </div>
         </main>
 
-        <!-- Navigation Bar -->
-        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] z-50">
-            <div class="glass rounded-[2rem] nav-container flex items-center px-4 shadow-2xl">
-                <button onclick="navigate('home')" id="btn-home" class="nav-btn active flex-1 flex flex-col items-center">
+        <!-- Navigation Bar (Anti-Cut Design) -->
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[400px] z-[90]">
+            <!-- Wrapper with visible overflow to prevent cutting plus button -->
+            <div class="relative glass rounded-[2.5rem] h-14 flex items-center px-4 shadow-2xl border border-white/10">
+                
+                <button onclick="navigate('home')" id="n-home" class="nav-btn flex-1 flex flex-col items-center nav-active">
                     <i data-lucide="home" class="w-5 h-5"></i>
-                    <span class="text-[8px] font-bold mt-1 uppercase">Home</span>
-                    <div class="dot"></div>
+                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Home</span>
                 </button>
-                <button onclick="navigate('review')" id="btn-review" class="nav-btn flex-1 flex flex-col items-center">
-                    <i data-lucide="book-open" class="w-5 h-5 opacity-50"></i>
-                    <span class="text-[8px] font-bold mt-1 uppercase opacity-50">Review</span>
-                    <div class="dot"></div>
+                
+                <button onclick="startReview()" id="n-review" class="nav-btn flex-1 flex flex-col items-center">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Review</span>
                 </button>
-                <div class="flex-shrink-0 px-2">
-                    <button onclick="navigate('add')" class="plus-btn rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                
+                <!-- Floating Center Button Area -->
+                <div class="flex-shrink-0 px-2 plus-container">
+                    <button onclick="navigate('add')" class="plus-btn w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-pink-500/40">
                         <i data-lucide="plus" class="w-7 h-7"></i>
                     </button>
                 </div>
-                <button onclick="navigate('quiz')" id="btn-quiz" class="nav-btn flex-1 flex flex-col items-center">
-                    <i data-lucide="brain" class="w-5 h-5 opacity-50"></i>
-                    <span class="text-[8px] font-bold mt-1 uppercase opacity-50">Quiz</span>
-                    <div class="dot"></div>
+
+                <button onclick="startQuiz()" id="n-quiz" class="nav-btn flex-1 flex flex-col items-center">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Quiz</span>
                 </button>
-                <button onclick="navigate('stats')" id="btn-stats" class="nav-btn flex-1 flex flex-col items-center">
-                    <i data-lucide="bar-chart-2" class="w-5 h-5 opacity-50"></i>
-                    <span class="text-[8px] font-bold mt-1 uppercase opacity-50">Stats</span>
-                    <div class="dot"></div>
+                
+                <button onclick="navigate('stats')" id="n-stats" class="nav-btn flex-1 flex flex-col items-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Stats</span>
                 </button>
             </div>
         </nav>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[100] opacity-0 transition-all duration-300 pointer-events-none">
+            <div class="glass px-6 py-2.5 rounded-full font-bold text-xs border border-white/20 shadow-2xl">
+                <span id="toast-msg"></span>
+            </div>
+        </div>
     </div>
 
     <script>
+        // --- STATE & DATA ---
+        let cards = JSON.parse(localStorage.getItem('amel_anki_vfinal') || '[]');
         let currentTab = 'home';
-        let cards = JSON.parse(localStorage.getItem('amel_cards_final') || '[]');
-        let isDarkMode = true;
+        let rPool = [], rIdx = 0;
+        let qPool = [], qIdx = 0, qScore = 0;
+        let isLight = false;
 
+        // Init icons
         lucide.createIcons();
-        updateCount();
+        syncUI();
 
-        function navigate(tabId) {
-            if (tabId === currentTab) return;
+        // Theme Checker
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
 
-            // Hide current
-            const prevPage = document.getElementById(currentTab);
-            prevPage.style.opacity = '0';
-            
-            setTimeout(() => {
-                prevPage.classList.remove('active');
-                
-                // Show next
-                const nextPage = document.getElementById(tabId);
-                nextPage.classList.add('active');
-                
-                // Trigger animation
-                setTimeout(() => {
-                    nextPage.style.opacity = '1';
-                }, 10);
-                
-                updateNavUI(tabId);
-                currentTab = tabId;
-            }, 150);
-        }
+        // --- NAVIGATION ---
+        function navigate(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${id}`).classList.add('active');
 
-        function updateNavUI(tabId) {
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-                btn.querySelector('i').classList.add('opacity-50');
-                btn.querySelector('span').classList.add('opacity-50');
+                btn.classList.remove('nav-active');
             });
 
-            const activeBtn = document.getElementById(`btn-${tabId}`);
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-                activeBtn.querySelector('i').classList.remove('opacity-50');
-                activeBtn.querySelector('span').classList.remove('opacity-50');
+            const activeBtn = document.getElementById(`n-${id}`);
+            if(activeBtn) activeBtn.classList.add('nav-active');
+
+            currentTab = id;
+            if(id === 'home' || id === 'stats') syncUI();
+            
+            // Auto-hide review buttons if moving out
+            if(id !== 'review') {
+                document.getElementById('rev-btns').classList.add('hidden');
             }
         }
 
+        // --- THEME ---
         function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('light-mode');
+            isLight = !isLight;
+            document.body.classList.toggle('light-mode', isLight);
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
             const icon = document.getElementById('theme-icon');
-            icon.setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
+            icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
             lucide.createIcons();
         }
 
-        function saveCard() {
-            const jp = document.getElementById('input-jp').value.trim();
-            const reading = document.getElementById('input-reading').value.trim();
-            const id = document.getElementById('input-id').value.trim();
+        // --- REVIEW ---
+        function startReview() {
+            if(cards.length === 0) return showToast("Materi kosong! Tambah dulu ya.");
+            rPool = [...cards].sort(() => Math.random() - 0.5);
+            rIdx = 0;
+            navigate('review');
+            renderReview();
+        }
 
-            if (!jp || !id) {
-                showToast("Wajib isi data!");
+        function renderReview() {
+            const c = rPool[rIdx];
+            document.getElementById('rev-front').innerText = c.jp;
+            document.getElementById('rev-back-id').innerText = c.id;
+            document.getElementById('rev-back-read').innerText = c.read || '---';
+            document.getElementById('rev-prog').innerText = `${rIdx + 1} / ${rPool.length}`;
+            document.getElementById('flip-inner').classList.remove('flipped');
+            document.getElementById('rev-btns').classList.add('hidden');
+        }
+
+        function flipCard() {
+            document.getElementById('flip-inner').classList.toggle('flipped');
+            document.getElementById('rev-btns').classList.toggle('hidden');
+        }
+
+        function reviewAction(ok) {
+            if(ok) {
+                const target = rPool[rIdx].jp;
+                cards = cards.map(c => c.jp === target ? {...c, mastered: true} : c);
+                localStorage.setItem('amel_anki_vfinal', JSON.stringify(cards));
+            }
+            rIdx++;
+            if(rIdx < rPool.length) renderReview();
+            else { 
+                showToast("Sesi review selesai! Otsukaresama! ✨"); 
+                setTimeout(() => navigate('home'), 800);
+            }
+        }
+
+        // --- QUIZ (JLPT LOGIC) ---
+        function startQuiz() {
+            if(cards.length < 4) return showToast("Minimal 4 materi untuk kuis!");
+            qPool = [...cards].sort(() => Math.random() - 0.5).slice(0, 5);
+            qIdx = 0; qScore = 0;
+            navigate('quiz');
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            if(qIdx >= qPool.length) {
+                showToast(`Kuis Selesai! Skor: ${qScore}/${qPool.length} 🏆`);
+                setTimeout(() => navigate('home'), 1500);
                 return;
             }
 
-            const newCard = { jp, reading, id, time: Date.now() };
-            cards.push(newCard);
-            localStorage.setItem('amel_cards_final', JSON.stringify(cards));
-
-            document.getElementById('input-jp').value = '';
-            document.getElementById('input-reading').value = '';
-            document.getElementById('input-id').value = '';
-
-            showToast("Tersimpan! ✨");
-            updateCount();
-            setTimeout(() => navigate('home'), 800);
-        }
-
-        function updateCount() {
-            const countEl = document.getElementById('card-count');
-            if (countEl) countEl.innerText = cards.length;
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('notification');
-            document.getElementById('notification-text').innerText = msg;
-            toast.style.opacity = '1';
-            toast.style.transform = 'translate(-50%, 10px)';
+            const current = qPool[qIdx];
+            const modes = ['kanji_to_id', 'id_to_kanji', 'read_to_id'];
+            const mode = modes[Math.floor(Math.random() * modes.length)];
             
+            let qText = '', correct = '', label = '';
+            
+            if(mode === 'kanji_to_id') {
+                qText = current.jp; correct = current.id; label = "Cek Arti (意味)";
+            } else if(mode === 'id_to_kanji') {
+                qText = current.id; correct = current.jp; label = "Cek Kanji (漢字)";
+            } else {
+                qText = current.read || current.jp; correct = current.id; label = "Cek Bacaan (読み)";
+            }
+
+            document.getElementById('q-text').innerText = qText;
+            document.getElementById('q-type-label').innerText = label;
+            document.getElementById('quiz-prog-text').innerText = `SOAL ${qIdx + 1}/${qPool.length}`;
+
+            // Mix choices
+            let choices = [correct];
+            let others = cards.filter(c => c.jp !== current.jp).sort(() => Math.random() - 0.5);
+            
+            choices.push(...others.slice(0, 3).map(c => {
+                if(mode === 'id_to_kanji') return c.jp;
+                return c.id;
+            }));
+            choices.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('q-options');
+            container.innerHTML = '';
+            choices.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = "quiz-opt glass w-full p-4 rounded-2xl text-left text-xs font-bold border border-white/5 active:bg-pink-500/10 transition-all";
+                b.innerText = opt;
+                b.onclick = () => {
+                    const all = document.querySelectorAll('.quiz-opt');
+                    all.forEach(el => el.onclick = null);
+                    if(opt === correct) {
+                        b.classList.add('border-green-500/50', 'bg-green-500/10');
+                        showToast("Benar! ✨"); qScore++;
+                    } else {
+                        b.classList.add('border-red-500/50', 'bg-red-500/10');
+                        showToast("Salah! 😢");
+                    }
+                    qIdx++;
+                    setTimeout(renderQuiz, 1000);
+                };
+                container.appendChild(b);
+            });
+        }
+
+        // --- STORAGE & UI ---
+        function saveCard() {
+            const jp = document.getElementById('in-jp').value.trim();
+            const read = document.getElementById('in-read').value.trim();
+            const id = document.getElementById('in-id').value.trim();
+            if(!jp || !id) return showToast("Data tidak lengkap!");
+
+            cards.push({ jp, read, id, mastered: false, ts: Date.now() });
+            localStorage.setItem('amel_anki_vfinal', JSON.stringify(cards));
+            
+            document.getElementById('in-jp').value = '';
+            document.getElementById('in-read').value = '';
+            document.getElementById('in-id').value = '';
+            showToast("Berhasil disimpan! 🌸");
+            syncUI();
+            setTimeout(() => navigate('home'), 1000);
+        }
+
+        function syncUI() {
+            const streak = parseInt(localStorage.getItem('streak') || '1');
+            document.getElementById('home-streak').innerText = streak;
+            document.getElementById('home-total').innerText = cards.length;
+            document.getElementById('stat-total').innerText = cards.length;
+            document.getElementById('stat-master').innerText = cards.filter(c => c.mastered).length;
+        }
+
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = m;
+            t.style.opacity = '1';
+            t.style.transform = 'translate(-50%, 12px)';
             setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translate(-50%, -10px)';
-            }, 2500);
+                t.style.opacity = '0';
+                t.style.transform = 'translate(-50%, 0px)';
+            }, 2000);
+        }
+
+        function resetData() {
+            if(confirm("Hapus semua data pembelajaran Amel?")) { 
+                localStorage.clear(); 
+                location.reload(); 
+            }
         }
     </script>
 </body>
 </html>
-    
