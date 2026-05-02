@@ -57,28 +57,28 @@
             transform: translateY(0);
         }
 
-        /* Navigation Style - Glowing Effect */
+        /* Navigation Style */
         .nav-btn {
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: rgba(150, 150, 150, 0.2);
+            color: rgba(255, 255, 255, 0.08);
         }
         
         body.light-mode .nav-btn {
-            color: rgba(0, 0, 0, 0.15);
+            color: rgba(0, 0, 0, 0.1);
         }
 
         .nav-btn i {
             filter: drop-shadow(0 0 0 rgba(236, 72, 153, 0));
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .nav-btn.nav-active {
             color: var(--pink) !important;
         }
         .nav-btn.nav-active i {
-            filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.9));
-            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px rgba(236, 72, 153, 1));
+            transform: scale(1.15) translateY(-2px);
         }
 
         /* Plus Button Area */
@@ -88,8 +88,12 @@
             margin-top: -28px;
         }
         .plus-btn {
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
             transition: all 0.3s ease;
+        }
+        .plus-btn:active {
+            transform: scale(0.9) translateY(2px);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
         }
 
         /* Flashcard Flip */
@@ -104,15 +108,7 @@
             backface-visibility: hidden;
         }
 
-        /* Quiz Buttons */
-        .quiz-opt {
-            transition: all 0.2s ease;
-        }
-        .quiz-opt:active {
-            transform: scale(0.96);
-        }
-
-        /* Bg Decor */
+        /* Background Decor */
         .bg-decor {
             position: fixed;
             z-index: -1;
@@ -120,6 +116,73 @@
             filter: blur(100px);
             opacity: 0.15;
             pointer-events: none;
+        }
+
+        /* Type Badge */
+        .badge {
+            font-size: 8px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* INTERAKTIF KUIS ANIMASI */
+        .quiz-opt {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .quiz-opt:active {
+            transform: scale(0.95);
+        }
+
+        .opt-correct {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            border-color: rgba(34, 197, 94, 0.8) !important;
+            color: #4ade80 !important;
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.4) !important;
+            z-index: 10;
+        }
+        
+        body.light-mode .opt-correct {
+            background-color: rgba(34, 197, 94, 0.25) !important;
+            border-color: #16a34a !important;
+            color: #15803d !important;
+            font-weight: 900 !important;
+            box-shadow: 0 0 18px rgba(34, 197, 94, 0.6) !important;
+        }
+
+        .opt-wrong {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: rgba(239, 68, 68, 0.8) !important;
+            color: #f87171 !important;
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        body.light-mode .opt-wrong {
+            background-color: rgba(239, 68, 68, 0.25) !important;
+            border-color: #dc2626 !important;
+            color: #b91c1c !important;
+            font-weight: 900 !important;
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.6) !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        /* STATS CHART ANIMATION */
+        .circle-inner {
+            background-color: var(--bg-dark);
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode .circle-inner {
+            background-color: var(--bg-light);
         }
     </style>
 </head>
@@ -135,7 +198,7 @@
                 <h1 class="text-2xl font-black tracking-tight bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
                     Okaeri, Amel!
                 </h1>
-                <p class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase">Nihongo Study Pro</p>
+                <p class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase">JLPT AI Database</p>
             </div>
             <button onclick="toggleTheme()" class="glass p-2.5 rounded-xl border border-white/5 active:scale-90 transition-transform">
                 <i id="theme-icon" data-lucide="sun" class="text-yellow-400 w-5 h-5"></i>
@@ -160,24 +223,24 @@
                     </div>
                 </div>
 
-                <div onclick="startReview()" class="glass p-8 rounded-[2.5rem] relative overflow-hidden active:scale-[0.98] transition-transform mb-6 cursor-pointer border border-pink-500/10 shadow-lg">
+                <div onclick="navigate('review')" class="glass p-8 rounded-[2.5rem] relative overflow-hidden active:scale-[0.98] transition-transform mb-6 cursor-pointer border border-pink-500/10 shadow-lg">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <i data-lucide="sparkles" class="w-12 h-12"></i>
                     </div>
                     <h2 class="text-2xl font-black mb-1">Mulai Review</h2>
-                    <p class="text-xs opacity-50 mb-6">Latih memori dengan sistem Anki.</p>
+                    <p class="text-xs opacity-50 mb-6">Hafalkan kosa kata & bunpou pribadimu.</p>
                     <div class="text-pink-500 font-bold text-xs flex items-center gap-2">
-                        Review Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        Pilih Mode <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </div>
                 </div>
 
-                <div onclick="startQuiz()" class="glass p-5 rounded-[1.8rem] flex items-center gap-4 active:scale-[0.98] transition-all cursor-pointer">
+                <div onclick="navigate('quiz')" class="glass p-5 rounded-[1.8rem] flex items-center gap-4 active:scale-[0.98] transition-all cursor-pointer">
                     <div class="w-10 h-10 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400">
-                        <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                        <i data-lucide="bot" class="w-5 h-5"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-sm font-bold">Kuis JLPT</h4>
-                        <p class="text-[9px] opacity-40">Uji Kanji, Hiragana & Arti.</p>
+                        <h4 class="text-sm font-bold">Kuis AI Tak Terbatas</h4>
+                        <p class="text-[9px] opacity-40">Soal dibuat otomatis SESUAI materi database.</p>
                     </div>
                     <i data-lucide="chevron-right" class="w-4 h-4 opacity-20"></i>
                 </div>
@@ -185,165 +248,356 @@
 
             <!-- REVIEW -->
             <div id="page-review" class="page">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="navigate('home')" class="text-[10px] font-bold opacity-30 flex items-center gap-1">
-                        <i data-lucide="arrow-left" class="w-3 h-3"></i> KEMBALI
-                    </button>
-                    <span id="rev-prog" class="text-[10px] font-black opacity-30">0 / 0</span>
-                </div>
-                <div class="relative h-72 w-full perspective-1000">
-                    <div id="flip-inner" class="flip-card-inner relative w-full h-full cursor-pointer" onclick="flipCard()">
-                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center border border-white/10 shadow-xl">
-                            <h2 id="rev-front" class="text-4xl font-black mb-4 tracking-tighter">---</h2>
-                            <p class="text-[9px] opacity-20 font-bold tracking-[0.2em] mt-10 uppercase">Tap untuk lihat arti</p>
+                <div id="review-menu" class="block animate-in fade-in duration-300">
+                    <h2 class="text-2xl font-black mb-1 text-center">Mode Review</h2>
+                    <p class="text-[9px] font-bold opacity-30 uppercase tracking-[0.2em] mb-8 text-center">Pilih materi dari databasemu</p>
+                    
+                    <div class="space-y-4">
+                        <div onclick="startReviewSession('vocab')" class="glass p-6 rounded-[2rem] cursor-pointer active:scale-95 transition-all border border-pink-500/20 shadow-lg shadow-pink-500/10 flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400">
+                                <span class="font-black text-xl">漢</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-pink-400 mb-1">Vocab & Kanji</h3>
+                                <p class="text-[10px] opacity-50 font-bold">Hafalkan kosa kata pribadimu</p>
+                            </div>
                         </div>
-                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center bg-white/5 border border-pink-500/30 shadow-2xl shadow-pink-500/10" style="transform: rotateY(180deg);">
-                            <h3 id="rev-back-id" class="text-2xl font-black mb-2">---</h3>
-                            <p id="rev-back-read" class="text-sm opacity-50 italic">---</p>
+                        
+                        <div onclick="startReviewSession('bunpou')" class="glass p-6 rounded-[2rem] cursor-pointer active:scale-95 transition-all border border-purple-500/20 shadow-lg shadow-purple-500/10 flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                <span class="font-black text-xl">文</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-purple-400 mb-1">Bunpou JLPT</h3>
+                                <p class="text-[10px] opacity-50 font-bold">Hafalkan pola kalimat & partikel</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="rev-btns" class="hidden mt-10 grid grid-cols-2 gap-4">
-                    <button onclick="reviewAction(false)" class="glass py-4 rounded-2xl text-red-500 font-black text-xs uppercase tracking-widest active:scale-95">Lupa</button>
-                    <button onclick="reviewAction(true)" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 rounded-2xl text-white font-black text-xs uppercase tracking-widest shadow-lg active:scale-95">Ingat</button>
+
+                <div id="review-session" class="hidden animate-in zoom-in-95 duration-300">
+                    <div class="flex justify-between items-center mb-6">
+                        <button onclick="exitSession('review')" class="text-[10px] font-bold opacity-30 flex items-center gap-1 active:scale-90">
+                            <i data-lucide="arrow-left" class="w-3 h-3"></i> KEMBALI
+                        </button>
+                        <span id="rev-prog" class="text-[10px] font-black opacity-30">0 / 0</span>
+                    </div>
+                    <div class="relative h-72 w-full perspective-1000">
+                        <div id="flip-inner" class="flip-card-inner relative w-full h-full cursor-pointer" onclick="flipCard()">
+                            <!-- FRONT -->
+                            <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center border border-white/10 shadow-xl">
+                                <span id="rev-badge-front" class="badge bg-pink-500/20 text-pink-500 mb-4 shadow-sm">Vocab</span>
+                                <h2 id="rev-front" class="text-4xl font-black mb-4 tracking-tighter">---</h2>
+                                <p class="text-[9px] opacity-20 font-bold tracking-[0.2em] mt-10 uppercase">Tap untuk lihat arti</p>
+                            </div>
+                            <!-- BACK -->
+                            <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center bg-white/5 border border-pink-500/30 shadow-2xl shadow-pink-500/10" style="transform: rotateY(180deg);">
+                                <h3 id="rev-back-id" class="text-xl font-black mb-2 text-pink-400">---</h3>
+                                <p id="rev-back-read" class="text-sm opacity-50 italic font-medium mb-4">---</p>
+                                <div id="rev-back-example-container" class="mt-2 hidden w-full bg-black/20 p-4 rounded-2xl border border-white/5">
+                                    <p class="text-[8px] font-black opacity-40 uppercase mb-2 tracking-[0.2em]">Contoh Penggunaan</p>
+                                    <p id="rev-back-example" class="text-sm opacity-90 leading-relaxed font-bold text-white"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rev-btns" class="hidden mt-10 grid grid-cols-2 gap-4 animate-in slide-in-from-bottom-4">
+                        <button onclick="reviewAction(false)" class="glass py-4 rounded-2xl text-red-400 font-black text-xs uppercase tracking-widest active:scale-95 transition-all">Lupa</button>
+                        <button onclick="reviewAction(true)" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 rounded-2xl text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-pink-500/20 active:scale-95 transition-all">Ingat</button>
+                    </div>
                 </div>
             </div>
 
             <!-- ADD CARD -->
             <div id="page-add" class="page">
                 <h2 class="text-2xl font-black mb-1">Tambah Materi</h2>
-                <p class="text-[10px] font-bold opacity-30 uppercase tracking-widest mb-8">Koleksi kosa kata baru</p>
-                <div class="glass p-6 rounded-[2.5rem] space-y-5">
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Bahasa Jepang (Kanji)</label>
-                        <input id="in-jp" type="text" placeholder="例：友達" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                <p class="text-[10px] font-bold opacity-30 uppercase tracking-widest mb-8">Koleksi kosa kata / Bunpou</p>
+                
+                <div class="glass p-6 rounded-[2.5rem] space-y-5 shadow-xl">
+                    <div class="flex gap-2 p-1.5 bg-black/30 rounded-2xl border border-white/5">
+                        <button id="type-vocab" onclick="setType('vocab')" class="flex-1 py-2.5 text-[10px] font-black tracking-widest rounded-xl bg-pink-500 text-white shadow-lg transition-all">VOCAB</button>
+                        <button id="type-bunpou" onclick="setType('bunpou')" class="flex-1 py-2.5 text-[10px] font-black tracking-widest rounded-xl text-white/40 hover:text-white/70 transition-all">BUNPOU</button>
                     </div>
+
                     <div class="space-y-2">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Hiragana / Romaji</label>
+                        <label id="label-jp" class="text-[9px] font-black uppercase opacity-50 ml-3 tracking-wider text-pink-400">Bahasa Jepang (Kanji)</label>
+                        <input id="in-jp" type="text" placeholder="例：友達 / ことができます" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                    </div>
+                    
+                    <div id="field-read" class="space-y-2">
+                        <label class="text-[9px] font-black uppercase opacity-50 ml-3 tracking-wider text-pink-400">Hiragana / Romaji</label>
                         <input id="in-read" type="text" placeholder="例：ともだち" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
                     </div>
+
                     <div class="space-y-2">
-                        <label class="text-[9px] font-black uppercase opacity-40 ml-3">Arti (Indonesia)</label>
-                        <input id="in-id" type="text" placeholder="例：Teman" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
+                        <label class="text-[9px] font-black uppercase opacity-50 ml-3 tracking-wider text-pink-400">Arti (Indonesia)</label>
+                        <input id="in-id" type="text" placeholder="例：Teman / Bisa (Bentuk Kebisaan)" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-pink-500 transition-all">
                     </div>
-                    <button onclick="saveCard()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase active:scale-95 transition-all shadow-lg mt-4">Simpan Kartu</button>
+
+                    <div id="field-example" class="space-y-2 hidden animate-in fade-in zoom-in duration-300">
+                        <label class="text-[9px] font-black uppercase opacity-50 ml-3 tracking-wider text-purple-400">Soal JLPT (Ganti jawaban dengan ___ )</label>
+                        <textarea id="in-example" placeholder="私は日本語を話す___。" class="w-full p-4 rounded-2xl outline-none border bg-white/5 border-white/10 text-sm focus:border-purple-500 transition-all h-24 resize-none leading-relaxed"></textarea>
+                        <p class="text-[8px] opacity-40 ml-3 mt-1 text-purple-200">Wajib diisi! Simbol ___ akan menjadi (　　) saat Kuis JLPT.</p>
+                    </div>
+
+                    <button onclick="saveCard()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-pink-500/20 mt-4">Simpan Kartu</button>
                 </div>
             </div>
 
-            <!-- QUIZ -->
+            <!-- QUIZ (AI MODE) -->
             <div id="page-quiz" class="page">
-                <!-- Quiz In-Game UI -->
-                <div id="quiz-game-container">
-                    <div class="flex justify-between items-center mb-6">
-                        <button onclick="navigate('home')" class="text-[10px] font-bold opacity-30 flex items-center gap-1">
-                            <i data-lucide="x" class="w-3 h-3"></i> BATAL
-                        </button>
-                        <span id="quiz-prog-text" class="text-[10px] font-black opacity-40">SOAL 1</span>
+                <div id="quiz-menu" class="block animate-in fade-in duration-300">
+                    <h2 class="text-2xl font-black mb-1 text-center">Kuis AI (Strict Database)</h2>
+                    <p class="text-[9px] font-bold opacity-30 uppercase tracking-[0.2em] mb-8 text-center">Kalimat Baru, Materi Sama</p>
+                    
+                    <div class="space-y-4">
+                        <div onclick="startAIQuiz('vocab')" class="glass p-6 rounded-[2rem] cursor-pointer active:scale-95 transition-all border border-pink-500/20 shadow-lg shadow-pink-500/10 flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400">
+                                <span class="font-black text-xl">漢</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-pink-400 mb-1">AI Vocab & Kanji</h3>
+                                <p class="text-[10px] opacity-50 font-bold">Kuis dari koleksi kosa katamu.</p>
+                            </div>
+                        </div>
+                        
+                        <div onclick="startAIQuiz('bunpou')" class="glass p-6 rounded-[2rem] cursor-pointer active:scale-95 transition-all border border-purple-500/20 shadow-lg shadow-purple-500/10 flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                <span class="font-black text-xl">文</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-purple-400 mb-1">AI Bunpou JLPT</h3>
+                                <p class="text-[10px] opacity-50 font-bold">Soal baru TEPAT SESUAI databasemu.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="glass p-10 rounded-[2.5rem] text-center mb-8 border border-white/5 shadow-inner">
-                        <span id="q-type-label" class="text-[8px] font-bold opacity-30 block mb-4 uppercase tracking-[0.3em]">Cek Arti</span>
-                        <h2 id="q-text" class="text-4xl font-black">---</h2>
+                </div>
+
+                <!-- SESI KUIS GAME -->
+                <div id="quiz-game-container" class="hidden relative">
+                    <!-- LOADER OVERLAY -->
+                    <div id="quiz-loader" class="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm rounded-[2.5rem] h-[300px]">
+                        <i data-lucide="loader-2" class="w-10 h-10 animate-spin text-pink-500 mb-4"></i>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-pink-300 animate-pulse">AI meracik soal baru...</p>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6 relative z-50">
+                        <button onclick="stopQuizEarly()" class="glass px-3 py-1.5 rounded-full text-[10px] font-black text-red-400 hover:bg-red-500/10 flex items-center gap-1 active:scale-90 transition-all border border-red-500/20">
+                            <i data-lucide="square" class="w-3 h-3 fill-red-400/20"></i> BERHENTI
+                        </button>
+                        
+                        <!-- Timer Element -->
+                        <div class="flex items-center gap-2">
+                            <span id="quiz-timer" class="text-[12px] font-mono font-black text-yellow-400 bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]">00:00</span>
+                            <span id="quiz-prog-text" class="text-[10px] font-black opacity-80 text-pink-400 bg-pink-500/10 border border-pink-500/20 px-3 py-1 rounded-full">SOAL 1</span>
+                        </div>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem] mb-6 border border-white/5 shadow-inner">
+                        <span id="q-type-label" class="text-[9px] font-black text-pink-400 block mb-4 uppercase tracking-[0.3em] bg-pink-500/10 inline-block px-3 py-1 rounded-full text-center w-full">Cek Arti</span>
+                        <div id="q-text" class="text-2xl font-bold leading-relaxed tracking-wide text-center">---</div>
                     </div>
                     <div id="q-options" class="space-y-3"></div>
                 </div>
 
-                <!-- Quiz Results UI (Initially Hidden) -->
+                <!-- SESI KUIS (Result) -->
                 <div id="quiz-result-container" class="hidden text-center animate-in zoom-in-95 duration-500">
-                    <div class="glass p-10 rounded-[3rem] border border-pink-500/20 mb-8 shadow-2xl relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-b from-pink-500/5 to-transparent"></div>
-                        <i data-lucide="trophy" class="w-16 h-16 mx-auto text-yellow-400 mb-6 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
-                        <h2 class="text-3xl font-black mb-2">Selesai!</h2>
-                        <p class="text-xs opacity-50 mb-8">Hasil perjuangan Amel hari ini</p>
+                    <div class="glass p-8 rounded-[3rem] border border-pink-500/20 mb-8 shadow-2xl relative overflow-hidden">
+                        <i data-lucide="trophy" class="w-16 h-16 mx-auto text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]"></i>
+                        <h2 class="text-3xl font-black mb-2 text-white">Selesai!</h2>
                         
-                        <div class="grid grid-cols-3 gap-2 mb-8">
-                            <div class="bg-green-500/10 p-3 rounded-2xl border border-green-500/20">
-                                <div id="res-correct" class="text-xl font-black text-green-400">0</div>
-                                <div class="text-[8px] font-bold uppercase opacity-50">Benar</div>
+                        <div class="grid grid-cols-2 gap-3 mb-8 mt-8">
+                            <div class="bg-green-500/10 p-4 rounded-2xl border border-green-500/30">
+                                <div id="res-correct" class="text-2xl font-black text-green-400">0</div>
+                                <div class="text-[9px] font-bold uppercase opacity-60 tracking-widest mt-1">Benar</div>
                             </div>
-                            <div class="bg-red-500/10 p-3 rounded-2xl border border-red-500/20">
-                                <div id="res-wrong" class="text-xl font-black text-red-400">0</div>
-                                <div class="text-[8px] font-bold uppercase opacity-50">Salah</div>
+                            <div class="bg-red-500/10 p-4 rounded-2xl border border-red-500/30">
+                                <div id="res-wrong" class="text-2xl font-black text-red-400">0</div>
+                                <div class="text-[9px] font-bold uppercase opacity-60 tracking-widest mt-1">Salah</div>
                             </div>
-                            <div class="bg-blue-500/10 p-3 rounded-2xl border border-blue-500/20">
-                                <div id="res-accuracy" class="text-xl font-black text-blue-400">0%</div>
-                                <div class="text-[8px] font-bold uppercase opacity-50">Akurasi</div>
+                            <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/30">
+                                <div id="res-accuracy" class="text-2xl font-black text-blue-400">0%</div>
+                                <div class="text-[9px] font-bold uppercase opacity-60 tracking-widest mt-1">Akurasi</div>
+                            </div>
+                            <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/30">
+                                <div id="res-time" class="text-2xl font-black text-yellow-400 font-mono">00:00</div>
+                                <div class="text-[9px] font-bold uppercase opacity-60 tracking-widest mt-1">Waktu</div>
                             </div>
                         </div>
 
-                        <button onclick="navigate('home')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all">Kembali ke Home</button>
+                        <button onclick="navigate('quiz')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-lg shadow-pink-500/30 active:scale-95 transition-all">Selesai</button>
                     </div>
                 </div>
             </div>
 
-            <!-- STATS -->
+            <!-- STATS (NEW ADVANCED DASHBOARD) -->
             <div id="page-stats" class="page">
-                <h2 class="text-2xl font-black mb-8 text-center">Analisis Belajar</h2>
-                <div class="space-y-4">
-                    <div class="glass p-6 rounded-[2.5rem] flex justify-between items-center">
-                        <span class="text-xs font-bold opacity-40 uppercase tracking-widest">Total Koleksi</span>
-                        <span id="stat-total" class="text-2xl font-black">0</span>
+                <h2 class="text-2xl font-black mb-6 text-center animate-in fade-in slide-in-from-top-4">Analisis Belajar</h2>
+                
+                <!-- Circular Mastery Chart -->
+                <div class="glass p-6 rounded-[2.5rem] mb-6 flex flex-col items-center justify-center shadow-lg relative overflow-hidden animate-in zoom-in-95">
+                    <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-pink-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+                    <p class="text-[10px] font-bold opacity-50 uppercase tracking-[0.2em] mb-4 z-10">Tingkat Penguasaan</p>
+                    
+                    <div id="stat-circle" class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300 z-10" style="background: conic-gradient(var(--pink) 0%, rgba(150,150,150,0.1) 0%);">
+                        <div class="absolute inset-2 circle-inner rounded-full flex flex-col items-center justify-center shadow-inner">
+                            <div class="flex items-end">
+                                <span id="stat-percent" class="text-4xl font-black text-pink-400 leading-none">0</span>
+                                <span class="text-pink-400 text-sm font-bold mb-1 ml-1">%</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="glass p-6 rounded-[2.5rem] flex justify-between items-center border-l-4 border-pink-500">
-                        <span class="text-xs font-bold opacity-40 uppercase tracking-widest">Sudah Hafal</span>
-                        <span id="stat-master" class="text-2xl font-black">0</span>
-                    </div>
-                    <button onclick="resetData()" class="w-full text-[9px] font-bold uppercase tracking-[0.4em] text-red-500/30 mt-16 hover:text-red-500 transition-colors">Hapus Semua Data</button>
+                    
+                    <p class="text-[11px] font-bold opacity-60 mt-5 z-10 text-center" id="stat-motivation">Ayo mulai menghafal! 💪</p>
                 </div>
+
+                <!-- 4 Grid Stats -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="glass p-5 rounded-[2rem] border border-blue-500/20 shadow-lg flex flex-col items-center justify-center text-center animate-in slide-in-from-left-4">
+                        <i data-lucide="database" class="w-5 h-5 text-blue-400 mb-2"></i>
+                        <div id="stat-total-adv" class="text-2xl font-black text-white light:text-gray-800">0</div>
+                        <div class="text-[9px] font-bold uppercase opacity-50 mt-1">Total Koleksi</div>
+                    </div>
+                    <div class="glass p-5 rounded-[2rem] border border-green-500/20 shadow-lg flex flex-col items-center justify-center text-center animate-in slide-in-from-right-4">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-green-400 mb-2"></i>
+                        <div id="stat-master-adv" class="text-2xl font-black text-green-400">0</div>
+                        <div class="text-[9px] font-bold uppercase opacity-50 mt-1">Sudah Hafal</div>
+                    </div>
+                    <div class="glass p-5 rounded-[2rem] border border-yellow-500/20 shadow-lg flex flex-col items-center justify-center text-center animate-in slide-in-from-left-4">
+                        <i data-lucide="brain" class="w-5 h-5 text-yellow-400 mb-2"></i>
+                        <div id="stat-unmaster-adv" class="text-2xl font-black text-yellow-400">0</div>
+                        <div class="text-[9px] font-bold uppercase opacity-50 mt-1">Sedang Belajar</div>
+                    </div>
+                    <div class="glass p-5 rounded-[2rem] border border-orange-500/20 shadow-lg flex flex-col items-center justify-center text-center animate-in slide-in-from-right-4">
+                        <i data-lucide="flame" class="w-5 h-5 text-orange-400 mb-2"></i>
+                        <div id="stat-streak-adv" class="text-2xl font-black text-orange-400">0</div>
+                        <div class="text-[9px] font-bold uppercase opacity-50 mt-1">Hari Streak</div>
+                    </div>
+                </div>
+
+                <button onclick="triggerResetData()" class="glass w-full py-4 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-red-500 border border-red-500/30 hover:bg-red-500/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] active:scale-95 transition-all animate-in slide-in-from-bottom-4">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Data Pribadi
+                </button>
             </div>
         </main>
 
         <!-- Navigation Bar -->
         <nav id="bottom-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[400px] z-[90]">
-            <div class="relative glass rounded-[2.5rem] h-14 flex items-center px-4 shadow-2xl border border-white/10">
+            <div class="relative glass rounded-[2.5rem] h-16 flex items-center px-4 shadow-2xl border border-white/10">
                 <button onclick="navigate('home')" id="n-home" class="nav-btn flex-1 flex flex-col items-center nav-active">
                     <i data-lucide="home" class="w-5 h-5"></i>
-                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Home</span>
+                    <span class="text-[7px] font-black mt-1.5 uppercase tracking-tighter">Home</span>
                 </button>
-                <button onclick="startReview()" id="n-review" class="nav-btn flex-1 flex flex-col items-center">
+                <button onclick="navigate('review')" id="n-review" class="nav-btn flex-1 flex flex-col items-center">
                     <i data-lucide="layers" class="w-5 h-5"></i>
-                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Review</span>
+                    <span class="text-[7px] font-black mt-1.5 uppercase tracking-tighter">Review</span>
                 </button>
                 <div class="flex-shrink-0 px-2 plus-container">
-                    <button onclick="navigate('add')" class="plus-btn w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-pink-500/30 active:scale-90 transition-transform">
+                    <button onclick="navigate('add')" class="plus-btn w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-pink-500/30">
                         <i data-lucide="plus" class="w-7 h-7"></i>
                     </button>
                 </div>
-                <button onclick="startQuiz()" id="n-quiz" class="nav-btn flex-1 flex flex-col items-center">
-                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
-                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Quiz</span>
+                <button onclick="navigate('quiz')" id="n-quiz" class="nav-btn flex-1 flex flex-col items-center">
+                    <i data-lucide="bot" class="w-5 h-5"></i>
+                    <span class="text-[7px] font-black mt-1.5 uppercase tracking-tighter">Quiz AI</span>
                 </button>
                 <button onclick="navigate('stats')" id="n-stats" class="nav-btn flex-1 flex flex-col items-center">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                    <span class="text-[7px] font-black mt-1 uppercase tracking-tighter">Stats</span>
+                    <span class="text-[7px] font-black mt-1.5 uppercase tracking-tighter">Stats</span>
                 </button>
             </div>
         </nav>
         
-        <!-- Toast -->
+        <!-- Toast Notification -->
         <div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[100] opacity-0 transition-all duration-300 pointer-events-none">
-            <div class="glass px-6 py-2 rounded-full font-bold text-xs border border-white/20">
+            <div class="glass px-6 py-2.5 rounded-full font-bold text-xs border border-white/20 shadow-2xl flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-pink-400"></i>
                 <span id="toast-msg"></span>
+            </div>
+        </div>
+
+        <!-- Custom Confirm Modal -->
+        <div id="custom-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+            <div class="glass p-8 rounded-[2rem] max-w-[85%] text-center border border-white/10 shadow-2xl animate-in zoom-in-95">
+                <i data-lucide="alert-circle" class="w-12 h-12 mx-auto text-pink-400 mb-4"></i>
+                <h3 id="modal-title" class="text-xl font-black mb-2 text-white">Konfirmasi</h3>
+                <p id="modal-desc" class="text-xs opacity-60 mb-6 leading-relaxed">Apakah kamu yakin?</p>
+                <div class="flex gap-3">
+                    <button id="modal-cancel" class="flex-1 py-3.5 rounded-xl border border-white/10 text-xs font-bold hover:bg-white/5 active:scale-95 transition-all">Batal</button>
+                    <button id="modal-confirm" class="flex-1 py-3.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold active:scale-95 transition-all shadow-lg shadow-pink-500/30">Yakin</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let cards = JSON.parse(localStorage.getItem('amel_anki_vfinal') || '[]');
+        // --- DATA DEFAULT: HANYA BUNPOU/PARTIKEL SEPERTI PERMINTAAN ---
+        const defaultData = [
+            { jp: "ことができます", read: "koto ga dekimasu", id: "Bisa (Bentuk Kebisaan)", example: "私は日本語を少し話す___。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "できます", read: "dekimasu", id: "Bisa / Mampu (Kemampuan)", example: "車の運転が___。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "られる", read: "rareru", id: "Bisa (Bentuk Potensial)", example: "この刺身は食べ___。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "とき", read: "toki", id: "Saat / Ketika (Anak Kalimat)", example: "日本へ行く___、パスポートが必要です。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "ので", read: "node", id: "Karena (Anak Kalimat)", example: "雨が降っている___、家にいます。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "で", read: "Partikel de", id: "Di (Tempat aktivitas) / Dengan (Alat)", example: "図書館___勉強します。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "に", read: "Partikel ni", id: "Ke / Di (Waktu / Tujuan / Eksistensi)", example: "明日、東京___行きます。", type: "bunpou", mastered: false, ts: Date.now() },
+            { jp: "を", read: "Partikel o / wo", id: "Objek dari kata kerja", example: "毎日、日本語___勉強します。", type: "bunpou", mastered: false, ts: Date.now() }
+        ];
+
+        let cards = JSON.parse(localStorage.getItem('amel_anki_jlpt_ai_strict') || JSON.stringify(defaultData));
+        
         let currentTab = 'home';
+        let currentType = 'vocab';
         let rPool = [], rIdx = 0;
+        
+        // QUIZ STATE (AI & UNLIMITED & LOCAL)
         let qPool = [], qIdx = 0, qCorrect = 0, qWrong = 0;
+        let quizTimerInterval = null;
+        let timeElapsed = 0;
+        let activeQuizMode = 'vocab';
+        let isFetchingMore = false;
+        let isQuizActive = false; // FLAG PENTING UNTUK BUG BERHENTI
+
+        // STATS ANIMATION TIMERS
+        let statIntervals = [];
+
         let isLight = false;
 
         lucide.createIcons();
         syncUI();
         if(localStorage.getItem('theme') === 'light') toggleTheme();
 
+        // --- CUSTOM MODAL UTILITY ---
+        function showModal(title, desc, onConfirm) {
+            const m = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            
+            document.getElementById('modal-cancel').onclick = () => {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            };
+            
+            document.getElementById('modal-confirm').onclick = () => {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+                onConfirm();
+            };
+        }
+
+        // --- NAVIGATION ---
         function navigate(id) {
-            // Reset quiz visibility when leaving or entering
-            document.getElementById('quiz-game-container').classList.remove('hidden');
-            document.getElementById('quiz-result-container').classList.add('hidden');
+            isQuizActive = false; 
+            clearInterval(quizTimerInterval);
+            
             document.getElementById('main-header').classList.remove('hidden');
             document.getElementById('bottom-nav').classList.remove('hidden');
+            document.getElementById('review-menu').classList.remove('hidden');
+            document.getElementById('review-session').classList.add('hidden');
+            document.getElementById('quiz-menu').classList.remove('hidden');
+            document.getElementById('quiz-game-container').classList.add('hidden');
+            document.getElementById('quiz-result-container').classList.add('hidden');
 
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(`page-${id}`).classList.add('active');
@@ -353,8 +607,28 @@
             if(activeBtn) activeBtn.classList.add('nav-active');
 
             currentTab = id;
-            if(id === 'home' || id === 'stats') syncUI();
-            if(id !== 'review') document.getElementById('rev-btns').classList.add('hidden');
+            if(id === 'home') syncUI();
+            if(id === 'stats') renderStatsAdvanced(); // Trigger Animasi Stats
+        }
+
+        function exitSession(mode) {
+            if(mode === 'review') {
+                document.getElementById('review-session').classList.add('hidden');
+                document.getElementById('review-menu').classList.remove('hidden');
+            }
+        }
+
+        function setType(type) {
+            currentType = type;
+            document.getElementById('type-vocab').classList.toggle('bg-pink-500', type === 'vocab');
+            document.getElementById('type-vocab').classList.toggle('text-white/40', type !== 'vocab');
+            document.getElementById('type-bunpou').classList.toggle('bg-purple-500', type === 'bunpou');
+            document.getElementById('type-bunpou').classList.toggle('text-white/40', type !== 'bunpou');
+            
+            document.getElementById('field-read').classList.toggle('hidden', type === 'bunpou');
+            document.getElementById('field-example').classList.toggle('hidden', type !== 'bunpou');
+            document.getElementById('label-jp').innerText = type === 'vocab' ? 'Bahasa Jepang (Kanji)' : 'Partikel / Pola Kalimat';
+            document.getElementById('label-jp').className = `text-[9px] font-black uppercase opacity-50 ml-3 tracking-wider ${type === 'vocab' ? 'text-pink-400' : 'text-purple-400'}`;
         }
 
         function toggleTheme() {
@@ -366,11 +640,18 @@
             lucide.createIcons();
         }
 
-        function startReview() {
-            if(cards.length === 0) return showToast("Materi kosong!");
-            rPool = [...cards].sort(() => Math.random() - 0.5);
+        // --- REVIEW MODE (LOKAL) ---
+        function startReviewSession(type) {
+            let filteredCards = cards.filter(c => type === 'vocab' ? (c.type === 'vocab' || !c.type) : c.type === 'bunpou');
+            if(filteredCards.length === 0) {
+                return showToast(`Materi ${type.toUpperCase()} di databasemu masih kosong!`);
+            }
+
+            rPool = [...filteredCards].sort(() => Math.random() - 0.5);
             rIdx = 0;
-            navigate('review');
+            
+            document.getElementById('review-menu').classList.add('hidden');
+            document.getElementById('review-session').classList.remove('hidden');
             renderReview();
         }
 
@@ -378,8 +659,22 @@
             const c = rPool[rIdx];
             document.getElementById('rev-front').innerText = c.jp;
             document.getElementById('rev-back-id').innerText = c.id;
-            document.getElementById('rev-back-read').innerText = c.read || '---';
+            document.getElementById('rev-back-read').innerText = c.read || '';
             document.getElementById('rev-prog').innerText = `${rIdx + 1} / ${rPool.length}`;
+            
+            const isBunpou = c.type === 'bunpou';
+            const badge = document.getElementById('rev-badge-front');
+            badge.innerText = isBunpou ? 'BUNPOU / PARTIKEL' : 'VOCAB & KANJI';
+            badge.className = `badge mb-6 shadow-md ${isBunpou ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-pink-500/20 text-pink-500 border border-pink-500/30'}`;
+
+            const exCont = document.getElementById('rev-back-example-container');
+            if(isBunpou && c.example) {
+                exCont.classList.remove('hidden');
+                document.getElementById('rev-back-example').innerHTML = c.example.replace('___', `<span class="text-purple-400 font-black px-1">【${c.jp}】</span>`);
+            } else {
+                exCont.classList.add('hidden');
+            }
+
             document.getElementById('flip-inner').classList.remove('flipped');
             document.getElementById('rev-btns').classList.add('hidden');
         }
@@ -393,122 +688,355 @@
             if(ok) {
                 const target = rPool[rIdx].jp;
                 cards = cards.map(c => c.jp === target ? {...c, mastered: true} : c);
-                localStorage.setItem('amel_anki_vfinal', JSON.stringify(cards));
+                localStorage.setItem('amel_anki_jlpt_ai_strict', JSON.stringify(cards));
             }
             rIdx++;
-            if(rIdx < rPool.length) renderReview();
-            else { showToast("Selesai! ✨"); navigate('home'); }
+            if(rIdx < rPool.length) {
+                renderReview();
+            } else { 
+                showToast("Otsukaresama! Sesi hafalan selesai ✨"); 
+                exitSession('review');
+            }
         }
 
-        function startQuiz() {
-            if(cards.length < 4) return showToast("Minimal 4 materi untuk kuis!");
-            qPool = [...cards].sort(() => Math.random() - 0.5).slice(0, 5);
-            qIdx = 0; qCorrect = 0; qWrong = 0;
+        // --- AI QUIZ ENGINE ---
+        const apiKey = "";
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        async function fetchAIQuestions(mode, retries = 0) {
+            const delays = [1000, 2000, 4000];
             
+            let prompt = "";
+            if(mode === 'vocab') {
+                let vocabItems = cards.filter(c => c.type === 'vocab' || !c.type).map(c => c.jp).join(', ');
+                if(!vocabItems) throw new Error("Vocab Kosong");
+                
+                prompt = `Kamu adalah pembuat soal kosa kata bahasa Jepang. Buatkan 5 soal pilihan ganda. 
+ATURAN SANGAT KETAT: Kosa kata yang diuji (jawaban benar) HARUS HANYA diambil dari daftar ini: [ ${vocabItems} ].
+JANGAN menggunakan kosa kata di luar daftar ini sebagai jawaban!
+Soal bisa berupa menebak arti bahasa Indonesia, menebak cara baca Hiragana, atau melengkapi kalimat dengan kata tersebut.
+Kalimat ceritanya harus selalu bervariasi dan dibuat baru (berbeda model). Pilihan jawaban harus berjumlah 4.`;
+            } else {
+                let bunpouItems = cards.filter(c => c.type === 'bunpou').map(c => c.jp).join(', ');
+                if(!bunpouItems) bunpouItems = "とき, ので, に, で, を, られる, できます, ことができます";
+                
+                prompt = `Kamu adalah pembuat soal ujian JLPT. Buatkan 5 soal tata bahasa (Bunpou) bahasa Jepang dengan bagian yang kosong (　　).
+ATURAN SANGAT KETAT: Jawaban yang benar dari soal-soal ini HARUS HANYA berasal dari daftar tata bahasa berikut: [ ${bunpouItems} ].
+JANGAN PERNAH memberikan soal dengan jawaban tata bahasa di luar daftar di atas! 
+Kalimat ceritanya harus selalu bervariasi, berbeda-beda dan dibuat baru olehmu.
+Pilihan jawaban (options) harus selalu berjumlah 4, tanpa nomor di depannya. Gunakan pengecoh yang mirip dari daftar di atas.`;
+            }
+
+            const schema = {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: {
+                        qText: { type: "STRING" },
+                        qLabel: { type: "STRING" },
+                        correct: { type: "STRING" },
+                        options: { type: "ARRAY", items: { type: "STRING" } }
+                    }
+                }
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json", responseSchema: schema }
+            };
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                if(!response.ok) throw new Error("API Limit");
+                const data = await response.json();
+                return JSON.parse(data.candidates[0].content.parts[0].text);
+            } catch (err) {
+                if(retries < delays.length) {
+                    await new Promise(r => setTimeout(r, delays[retries]));
+                    return fetchAIQuestions(mode, retries + 1);
+                }
+                throw err;
+            }
+        }
+
+        async function startAIQuiz(mode) {
+            const filteredCards = cards.filter(c => mode === 'vocab' ? (c.type === 'vocab' || !c.type) : c.type === 'bunpou');
+            if(filteredCards.length < 3) {
+                return showToast(`Materi ${mode.toUpperCase()} di databasemu masih kurang dari 3! Tambah dulu ya agar kuis seru.`);
+            }
+
+            activeQuizMode = mode;
+            qPool = []; qIdx = 0; qCorrect = 0; qWrong = 0; timeElapsed = 0;
+            isFetchingMore = true;
+            isQuizActive = true; 
+
+            document.getElementById('quiz-menu').classList.add('hidden');
             document.getElementById('quiz-game-container').classList.remove('hidden');
-            document.getElementById('quiz-result-container').classList.add('hidden');
-            
-            navigate('quiz');
-            renderQuiz();
+            document.getElementById('quiz-loader').classList.remove('hidden');
+            document.getElementById('q-text').innerHTML = "";
+            document.getElementById('q-options').innerHTML = "";
+
+            // Start Timer
+            document.getElementById('quiz-timer').innerText = "00:00";
+            clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(() => {
+                timeElapsed++;
+                const m = String(Math.floor(timeElapsed / 60)).padStart(2, '0');
+                const s = String(timeElapsed % 60).padStart(2, '0');
+                document.getElementById('quiz-timer').innerText = `${m}:${s}`;
+            }, 1000);
+
+            try {
+                const newQs = await fetchAIQuestions(activeQuizMode);
+                qPool.push(...newQs);
+                isFetchingMore = false;
+                document.getElementById('quiz-loader').classList.add('hidden');
+                
+                if(isQuizActive) renderAIQuiz();
+            } catch (e) {
+                showToast("Gagal menyusun soal AI. Pastikan Vocab tidak kosong.");
+                isQuizActive = false;
+                navigate('quiz');
+            }
         }
 
-        function renderQuiz() {
-            if(qIdx >= qPool.length) {
+        // CUSTOM MODAL UNTUK BERHENTI (ANTI BUG/BLOKIR)
+        function stopQuizEarly() {
+            showModal("Hentikan Kuis?", "Yakin ingin melihat hasil akhir sekarang?", () => {
+                isQuizActive = false; // Mematikan render soal selanjutnya
                 showQuizResults();
-                return;
+            });
+        }
+
+        function renderAIQuiz() {
+            if(!isQuizActive) return; // Menghentikan eksekusi jika sudah distop
+
+            if(qIdx >= qPool.length) {
+                if(isFetchingMore) {
+                    document.getElementById('quiz-loader').classList.remove('hidden');
+                    setTimeout(() => { if(isQuizActive) renderAIQuiz(); }, 500);
+                    return;
+                } else {
+                    isQuizActive = false;
+                    showQuizResults();
+                    return;
+                }
+            }
+
+            document.getElementById('quiz-loader').classList.add('hidden');
+
+            if (qIdx >= qPool.length - 2 && !isFetchingMore) {
+                isFetchingMore = true;
+                fetchAIQuestions(activeQuizMode).then(newQs => {
+                    qPool.push(...newQs);
+                    isFetchingMore = false;
+                }).catch(e => { isFetchingMore = false; });
             }
 
             const current = qPool[qIdx];
-            const modes = ['kanji_to_id', 'id_to_kanji', 'read_to_id'];
-            const mode = modes[Math.floor(Math.random() * modes.length)];
             
-            let qText = '', correct = '', label = '';
-            if(mode === 'kanji_to_id') { qText = current.jp; correct = current.id; label = "Cek Arti (意味)"; }
-            else if(mode === 'id_to_kanji') { qText = current.id; correct = current.jp; label = "Cek Kanji (漢字)"; }
-            else { qText = current.read || current.jp; correct = current.id; label = "Cek Bacaan (読み)"; }
+            // Format JLPT UI
+            let qHtml = "";
+            if (activeQuizMode === 'bunpou') {
+                qHtml = `<div class="text-[10px] font-normal opacity-50 mb-4 text-left leading-relaxed">次の文の（　　）に入れるのに最もよいものを、1・2・3・4から一つ選びなさい。</div><div class="text-xl font-bold leading-loose text-left">${current.qText}</div>`;
+                document.getElementById('q-type-label').className = "text-[9px] font-black text-purple-400 block mb-4 uppercase tracking-[0.3em] bg-purple-500/10 inline-block px-4 py-1.5 rounded-full border border-purple-500/20";
+            } else {
+                qHtml = `<div class="text-2xl font-black px-2 leading-relaxed">${current.qText}</div>`;
+                document.getElementById('q-type-label').className = "text-[9px] font-black text-pink-400 block mb-4 uppercase tracking-[0.3em] bg-pink-500/10 inline-block px-4 py-1.5 rounded-full border border-pink-500/20";
+            }
 
-            document.getElementById('q-text').innerText = qText;
-            document.getElementById('q-type-label').innerText = label;
-            document.getElementById('quiz-prog-text').innerText = `SOAL ${qIdx + 1}/${qPool.length}`;
-
-            let choices = [correct];
-            let others = cards.filter(c => c.jp !== current.jp).sort(() => Math.random() - 0.5);
-            choices.push(...others.slice(0, 3).map(c => (mode === 'id_to_kanji' ? c.jp : c.id)));
-            choices.sort(() => Math.random() - 0.5);
+            document.getElementById('q-text').innerHTML = qHtml;
+            document.getElementById('q-type-label').innerText = current.qLabel || (activeQuizMode === 'bunpou' ? "Soal JLPT" : "Cek Kosakata");
+            document.getElementById('quiz-prog-text').innerText = `SOAL ${qIdx + 1}`;
 
             const container = document.getElementById('q-options');
             container.innerHTML = '';
-            choices.forEach(opt => {
+            
+            current.options.forEach((opt, index) => {
                 const b = document.createElement('button');
-                b.className = "quiz-opt glass w-full p-4 rounded-2xl text-left text-xs font-bold border border-white/5 transition-all";
-                b.innerText = opt;
+                b.className = "quiz-opt glass w-full p-4 rounded-2xl text-left text-sm font-bold border border-white/5 transition-all shadow-sm flex items-center hover:bg-white/10";
+                b.dataset.val = opt; 
+                b.innerHTML = `<span class="w-6 h-6 flex-shrink-0 rounded-full bg-white/10 flex items-center justify-center mr-4 text-[10px] opacity-70">${index + 1}</span> <span class="flex-1">${opt}</span>`;
+                
                 b.onclick = () => {
+                    if(!isQuizActive) return; 
+                    
                     const all = document.querySelectorAll('.quiz-opt');
-                    all.forEach(el => el.onclick = null);
-                    if(opt === correct) {
-                        b.classList.add('border-green-500/50', 'bg-green-500/10');
-                        showToast("Benar! ✨"); qCorrect++;
+                    all.forEach(el => el.onclick = null); 
+                    
+                    if(opt === current.correct) {
+                        b.classList.add('opt-correct');
+                        showToast("Benar! ✨"); 
+                        qCorrect++;
                     } else {
-                        b.classList.add('border-red-500/50', 'bg-red-500/10');
-                        showToast("Salah! 😢"); qWrong++;
+                        b.classList.add('opt-wrong');
+                        // Highlight jawaban yg benar juga
+                        all.forEach(el => {
+                            if(el.dataset.val === current.correct) {
+                                el.classList.add('opt-correct');
+                            }
+                        });
+                        showToast("Salah! 😢"); 
+                        qWrong++;
                     }
+                    
                     qIdx++;
-                    setTimeout(renderQuiz, 1000);
+                    
+                    // Jeda sejenak untuk melihat animasi interaktif sebelum lanjut
+                    setTimeout(() => {
+                        if(isQuizActive) renderAIQuiz();
+                    }, 1500); 
                 };
                 container.appendChild(b);
             });
         }
 
         function showQuizResults() {
+            clearInterval(quizTimerInterval);
+
             document.getElementById('quiz-game-container').classList.add('hidden');
             document.getElementById('quiz-result-container').classList.remove('hidden');
             document.getElementById('main-header').classList.add('hidden');
             document.getElementById('bottom-nav').classList.add('hidden');
 
-            const accuracy = Math.round((qCorrect / qPool.length) * 100);
+            const answeredCount = qIdx;
+            const accuracy = answeredCount > 0 ? Math.round((qCorrect / answeredCount) * 100) : 0;
+            
             document.getElementById('res-correct').innerText = qCorrect;
             document.getElementById('res-wrong').innerText = qWrong;
             document.getElementById('res-accuracy').innerText = accuracy + '%';
+
+            const m = String(Math.floor(timeElapsed / 60)).padStart(2, '0');
+            const s = String(timeElapsed % 60).padStart(2, '0');
+            document.getElementById('res-time').innerText = `${m}:${s}`;
         }
 
+        // --- ADVANCED STATS ANIMATION ---
+        function clearStatIntervals() {
+            statIntervals.forEach(clearInterval);
+            statIntervals = [];
+        }
+
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            if (!obj) return;
+            if (start === end) {
+                obj.innerText = end;
+                return;
+            }
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 1 : -1;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            if (stepTime < 10) stepTime = 10; // min delay
+            
+            let timer = setInterval(function() {
+                current += increment;
+                obj.innerText = current;
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+            statIntervals.push(timer);
+        }
+
+        function renderStatsAdvanced() {
+            clearStatIntervals(); // Bersihkan animasi yang mungkin sedang berjalan
+            
+            const total = cards.length;
+            const mastered = cards.filter(c => c.mastered).length;
+            const unmastered = total - mastered;
+            const percentage = total > 0 ? Math.floor((mastered / total) * 100) : 0;
+            const streak = parseInt(localStorage.getItem('streak') || '1');
+
+            // Reset tampilan ke 0 sebelum dianimasikan
+            document.getElementById('stat-total-adv').innerText = "0";
+            document.getElementById('stat-master-adv').innerText = "0";
+            document.getElementById('stat-unmaster-adv').innerText = "0";
+            document.getElementById('stat-streak-adv').innerText = "0";
+            document.getElementById('stat-percent').innerText = "0";
+            
+            // Atur Teks Motivasi Pintar
+            const motObj = document.getElementById('stat-motivation');
+            if(total === 0) motObj.innerText = "Koleksi materi masih kosong! 📚";
+            else if(percentage === 100) motObj.innerText = "Luar biasa! Penguasaan Sempurna! 🎉";
+            else if(percentage >= 50) motObj.innerText = "Setengah jalan! Teruskan! 🔥";
+            else motObj.innerText = "Ayo mulai hafalkan materimu! 💪";
+
+            // Delay sedikit agar sinkron dengan animasi slide halaman
+            setTimeout(() => {
+                animateValue('stat-total-adv', 0, total, 1000);
+                animateValue('stat-master-adv', 0, mastered, 1000);
+                animateValue('stat-unmaster-adv', 0, unmastered, 1000);
+                animateValue('stat-streak-adv', 0, streak, 1000);
+                animateValue('stat-percent', 0, percentage, 1000);
+
+                // Animasi Grafik Lingkaran
+                const circle = document.getElementById('stat-circle');
+                let currentPct = 0;
+                
+                if (percentage === 0) {
+                    circle.style.background = `conic-gradient(var(--pink) 0%, rgba(150,150,150,0.1) 0%)`;
+                } else {
+                    let pTimer = setInterval(() => {
+                        currentPct += 1;
+                        if(currentPct >= percentage) {
+                            clearInterval(pTimer);
+                            currentPct = percentage; // pastikan pas berhenti
+                        }
+                        circle.style.background = `conic-gradient(var(--pink) ${currentPct}%, rgba(150,150,150,0.1) ${currentPct}%)`;
+                    }, 1000 / percentage);
+                    statIntervals.push(pTimer);
+                }
+            }, 300);
+        }
+
+        // --- STORAGE & UI ---
         function saveCard() {
             const jp = document.getElementById('in-jp').value.trim();
             const read = document.getElementById('in-read').value.trim();
             const id = document.getElementById('in-id').value.trim();
-            if(!jp || !id) return showToast("Wajib isi data!");
+            const example = document.getElementById('in-example').value.trim();
+            
+            if(!jp || !id) return showToast("Harap isi bagian yang penting!");
 
-            cards.push({ jp, read, id, mastered: false, ts: Date.now() });
-            localStorage.setItem('amel_anki_vfinal', JSON.stringify(cards));
+            cards.push({ jp, read, id, example, type: currentType, mastered: false, ts: Date.now() });
+            localStorage.setItem('amel_anki_jlpt_ai_strict', JSON.stringify(cards));
             
             document.getElementById('in-jp').value = '';
             document.getElementById('in-read').value = '';
             document.getElementById('in-id').value = '';
-            showToast("Berhasil disimpan! 🌸");
+            document.getElementById('in-example').value = '';
+            showToast("Materi berhasil disimpan! 🌸");
             syncUI();
             setTimeout(() => navigate('home'), 1000);
         }
 
         function syncUI() {
-            const streak = parseInt(localStorage.getItem('streak') || '1');
-            document.getElementById('home-streak').innerText = streak;
             document.getElementById('home-total').innerText = cards.length;
-            document.getElementById('stat-total').innerText = cards.length;
-            document.getElementById('stat-master').innerText = cards.filter(c => c.mastered).length;
+            // document.getElementById('stat-total').innerText = cards.length; (Dihapus karena pakai dashboard baru)
         }
 
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = m;
             t.style.opacity = '1';
-            t.style.transform = 'translate(-50%, 12px)';
+            t.style.transform = 'translate(-50%, 15px)';
             setTimeout(() => {
                 t.style.opacity = '0';
                 t.style.transform = 'translate(-50%, -10px)';
             }, 2000);
         }
 
-        function resetData() {
-            if(confirm("Hapus semua data pembelajaran Amel?")) { localStorage.clear(); location.reload(); }
+        function triggerResetData() {
+            showModal("Hapus Data?", "Semua materi yang kamu kumpulkan akan hilang secara permanen. Lanjutkan?", () => {
+                localStorage.removeItem('amel_anki_jlpt_ai_strict'); 
+                location.reload(); 
+            });
         }
     </script>
 </body>
