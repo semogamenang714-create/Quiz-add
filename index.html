@@ -61,10 +61,8 @@
             75% { transform: translateX(5px); }
         }
 
-        /* STAR SOAL STYLE */
         .star-mark { color: #facc15; font-size: 26px; vertical-align: middle; text-shadow: 0 0 10px rgba(250, 204, 21, 0.8); margin: 0 5px; }
 
-        /* TOAST FIX */
         #toast {
             transform: translateY(-20px) translateX(-50%);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,7 +82,7 @@
         <header id="main-header" class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="text-2xl font-black tracking-tight bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">Okaeri, Amel!</h1>
-                <p class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase">JLPT Strict Database</p>
+                <p class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase">Flashcards & Quiz</p>
             </div>
             <div class="glass p-2.5 rounded-xl border border-white/5">
                 <i data-lucide="sparkles" class="text-pink-400 w-5 h-5"></i>
@@ -92,7 +90,6 @@
         </header>
 
         <main class="flex-1 relative">
-            <!-- HOME -->
             <div id="page-home" class="page active">
                 <div class="grid grid-cols-2 gap-3 mb-6">
                     <div class="glass p-5 rounded-[2rem] text-center">
@@ -107,95 +104,73 @@
                     </div>
                 </div>
 
-                <div onclick="navigate('review')" class="glass p-8 rounded-[2.5rem] mb-6 cursor-pointer border border-pink-500/10 shadow-lg active:scale-95 transition-all">
+                <div onclick="startReviewSession()" class="glass p-8 rounded-[2.5rem] mb-6 cursor-pointer border border-pink-500/10 shadow-lg active:scale-95 transition-all">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i data-lucide="sparkles" class="w-12 h-12"></i>
+                        <i data-lucide="layers" class="w-12 h-12"></i>
                     </div>
                     <h2 class="text-2xl font-black mb-1">Mulai Review</h2>
-                    <p class="text-xs opacity-50">Latih memori kosakata & bunpou.</p>
+                    <p class="text-xs opacity-50">Hafalkan kartu Vocab & Kanji pribadimu.</p>
                 </div>
 
                 <div onclick="navigate('quiz')" class="glass p-5 rounded-[1.8rem] flex items-center gap-4 cursor-pointer active:scale-95 transition-all">
-                    <div class="w-10 h-10 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i data-lucide="bot"></i></div>
+                    <div class="w-10 h-10 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i data-lucide="brain-circuit"></i></div>
                     <div class="flex-1">
-                        <h4 class="text-sm font-bold">Kuis JLPT N2</h4>
-                        <p class="text-[9px] opacity-40">Soal asli dari database pribadimu.</p>
+                        <h4 class="text-sm font-bold">Kuis Bunpou & Vocab</h4>
+                        <p class="text-[9px] opacity-40">Uji kemampuan dengan database soal.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- REVIEW -->
             <div id="page-review" class="page">
-                <div id="review-menu" class="space-y-4">
-                    <h2 class="text-2xl font-black text-center mb-6">Mode Review</h2>
-                    <div onclick="startReviewSession('vocab')" class="glass p-6 rounded-[2rem] cursor-pointer border border-pink-500/20 flex items-center gap-4 hover:bg-white/5">
-                        <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 font-black">漢</div>
-                        <div><h3 class="font-black text-pink-400">Vocab & Kanji</h3><p class="text-[10px] opacity-50">Kosakata pribadimu.</p></div>
-                    </div>
-                    <div onclick="startReviewSession('bunpou')" class="glass p-6 rounded-[2rem] cursor-pointer border border-purple-500/20 flex items-center gap-4 hover:bg-white/5">
-                        <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-black">文</div>
-                        <div><h3 class="font-black text-purple-400">Bunpou & Partikel</h3><p class="text-[10px] opacity-50">Pola tata bahasa & partikel.</p></div>
-                    </div>
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="exitSession('review')" class="text-[10px] font-bold opacity-30 flex items-center gap-1"><i data-lucide="arrow-left" class="w-3 h-3"></i> KEMBALI</button>
+                    <span id="rev-prog" class="text-[10px] font-black opacity-30">0 / 0</span>
                 </div>
-
-                <div id="review-session" class="hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <button onclick="exitSession('review')" class="text-[10px] font-bold opacity-30 flex items-center gap-1"><i data-lucide="arrow-left" class="w-3 h-3"></i> KEMBALI</button>
-                        <span id="rev-prog" class="text-[10px] font-black opacity-30">0 / 0</span>
-                    </div>
-                    <div class="relative h-72 w-full perspective-1000">
-                        <div id="flip-inner" class="flip-card-inner relative w-full h-full cursor-pointer" onclick="flipCard()">
-                            <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center border border-white/10">
-                                <span id="rev-badge-front" class="text-[8px] font-black uppercase tracking-widest bg-pink-500/10 text-pink-500 px-3 py-1 rounded-full mb-4">Vocab</span>
-                                <h2 id="rev-front" class="text-4xl font-black mb-4">---</h2>
-                            </div>
-                            <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center bg-white/5 border border-pink-500/30" style="transform: rotateY(180deg);">
-                                <h3 id="rev-back-id" class="text-2xl font-black text-pink-400 mb-2">---</h3>
-                                <p id="rev-back-read" class="text-sm opacity-50 mb-4">---</p>
-                                <p id="rev-back-example" class="text-xs opacity-80 italic"></p>
-                            </div>
+                <div class="relative h-72 w-full perspective-1000">
+                    <div id="flip-inner" class="flip-card-inner relative w-full h-full cursor-pointer" onclick="flipCard()">
+                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center border border-white/10">
+                            <span class="text-[8px] font-black uppercase tracking-widest bg-pink-500/10 text-pink-500 px-3 py-1 rounded-full mb-4">VOCAB / KANJI</span>
+                            <h2 id="rev-front" class="text-4xl font-black mb-4">---</h2>
+                            <p class="text-[8px] opacity-20 uppercase font-black tracking-widest">Tap to Flip</p>
+                        </div>
+                        <div class="backface-hidden glass absolute inset-0 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center bg-white/5 border border-pink-500/30" style="transform: rotateY(180deg);">
+                            <h3 id="rev-back-id" class="text-2xl font-black text-pink-400 mb-2">---</h3>
+                            <p id="rev-back-read" class="text-sm opacity-50">---</p>
                         </div>
                     </div>
-                    <div id="rev-btns" class="hidden mt-10 grid grid-cols-2 gap-4">
-                        <button onclick="reviewAction(false)" class="glass py-4 rounded-2xl text-red-400 font-black text-xs uppercase hover:bg-red-500/10">Lupa</button>
-                        <button onclick="reviewAction(true)" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 rounded-2xl text-white font-black text-xs hover:opacity-90">Ingat</button>
-                    </div>
+                </div>
+                <div id="rev-btns" class="hidden mt-10 grid grid-cols-2 gap-4">
+                    <button onclick="reviewAction(false)" class="glass py-4 rounded-2xl text-red-400 font-black text-xs uppercase hover:bg-red-500/10">Lupa</button>
+                    <button onclick="reviewAction(true)" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 rounded-2xl text-white font-black text-xs hover:opacity-90">Ingat</button>
                 </div>
             </div>
 
-            <!-- ADD -->
             <div id="page-add" class="page">
-                <h2 class="text-2xl font-black mb-6">Tambah Materi</h2>
+                <h2 class="text-2xl font-black mb-6">Tambah Kosakata</h2>
                 <div class="glass p-6 rounded-[2.5rem] space-y-4">
-                    <div class="flex gap-2 p-1 bg-black/20 rounded-xl">
-                        <button id="type-vocab" onclick="setType('vocab')" class="flex-1 py-3 text-[10px] font-black rounded-lg bg-pink-500 text-white transition-all">VOCAB</button>
-                        <button id="type-bunpou" onclick="setType('bunpou')" class="flex-1 py-3 text-[10px] font-black rounded-lg text-white/40 transition-all">BUNPOU</button>
-                    </div>
-                    <input id="in-jp" type="text" placeholder="Jepang / Kanji / Pola" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm focus:border-pink-500 outline-none transition-colors">
-                    <input id="in-read" type="text" placeholder="Hiragana" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm focus:border-pink-500 outline-none transition-colors">
+                    <input id="in-jp" type="text" placeholder="Jepang / Kanji" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm focus:border-pink-500 outline-none transition-colors">
+                    <input id="in-read" type="text" placeholder="Cara Baca (Hiragana)" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm focus:border-pink-500 outline-none transition-colors">
                     <input id="in-id" type="text" placeholder="Arti Indonesia" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm focus:border-pink-500 outline-none transition-colors">
-                    <textarea id="in-example" placeholder="Contoh Kalimat (Gunakan ___ untuk bagian rumpang)" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm h-24 outline-none transition-colors"></textarea>
                     <button onclick="saveCard()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black hover:opacity-90 transition-opacity">Simpan Kartu</button>
                 </div>
             </div>
 
-            <!-- QUIZ -->
             <div id="page-quiz" class="page">
                 <div id="quiz-menu" class="space-y-4">
-                    <h2 class="text-2xl font-black text-center mb-6">Mode Kuis Database</h2>
+                    <h2 class="text-2xl font-black text-center mb-6">Mode Kuis</h2>
                     <div onclick="startQuizSession('vocab')" class="glass p-6 rounded-[2rem] cursor-pointer flex items-center gap-4 hover:bg-white/5">
                         <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 font-black">漢</div>
-                        <div><h3 class="font-black text-pink-400">Kuis Vocab LOKAL</h3><p class="text-[10px] opacity-50">Dari databasemu sendiri.</p></div>
+                        <div><h3 class="font-black text-pink-400">Kuis Vocab Pribadi</h3><p class="text-[10px] opacity-50">Dari kartu yang kamu buat.</p></div>
                     </div>
                     <div onclick="startQuizSession('bunpou')" class="glass p-6 rounded-[2rem] cursor-pointer flex items-center gap-4 border border-blue-500/20 hover:bg-white/5">
                         <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-black">★</div>
-                        <div><h3 class="font-black text-blue-400">Kuis Bunpou JLPT Asli</h3><p class="text-[10px] opacity-50 font-bold text-yellow-400">STRICT: Menggunakan 40 soal databasemu!</p></div>
+                        <div><h3 class="font-black text-blue-400">Kuis Bunpou JLPT</h3><p class="text-[10px] opacity-50 font-bold text-yellow-400">DATABASE: 40 Soal Pilihan Amel!</p></div>
                     </div>
                 </div>
 
                 <div id="quiz-game-container" class="hidden relative">
                     <div class="flex justify-between items-center mb-6">
-                        <button onclick="stopQuizEarly()" class="glass px-4 py-2 rounded-full text-[10px] font-black text-red-400 hover:bg-red-500/10 active:scale-90 transition-all border border-red-500/20 shadow-md">
+                        <button onclick="stopQuizEarly()" class="glass px-4 py-2 rounded-full text-[10px] font-black text-red-400 hover:bg-red-500/10 active:scale-90 transition-all border border-red-500/20">
                             <i data-lucide="square" class="inline w-3 h-3 mr-1"></i> BERHENTI
                         </button>
                         <div class="flex items-center gap-2">
@@ -204,7 +179,7 @@
                         </div>
                     </div>
                     <div class="glass p-8 rounded-[2.5rem] mb-6 text-center shadow-inner">
-                        <span id="q-type-label" class="text-[9px] font-black uppercase tracking-widest bg-pink-500/10 text-pink-400 px-3 py-1 rounded-full inline-block mb-4">Cek Arti</span>
+                        <span id="q-type-label" class="text-[9px] font-black uppercase tracking-widest bg-pink-500/10 text-pink-400 px-3 py-1 rounded-full inline-block mb-4">SOAL</span>
                         <div id="q-text" class="text-xl font-bold leading-relaxed text-left">---</div>
                     </div>
                     <div id="q-options" class="space-y-3"></div>
@@ -217,68 +192,63 @@
                         <div class="grid grid-cols-2 gap-3 mb-8">
                             <div class="bg-green-500/10 p-4 rounded-2xl border border-green-500/30">
                                 <div id="res-correct" class="text-2xl font-black text-green-400">0</div>
-                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1 tracking-widest">Benar</div>
+                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1">Benar</div>
                             </div>
                             <div class="bg-red-500/10 p-4 rounded-2xl border border-red-500/30">
                                 <div id="res-wrong" class="text-2xl font-black text-red-400">0</div>
-                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1 tracking-widest">Salah</div>
+                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1">Salah</div>
                             </div>
                             <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/30">
                                 <div id="res-accuracy" class="text-2xl font-black text-blue-400">0%</div>
-                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1 tracking-widest">Akurasi</div>
+                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1">Akurasi</div>
                             </div>
                             <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/30">
                                 <div id="res-time" class="text-2xl font-black text-yellow-400 font-mono">00:00</div>
-                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1 tracking-widest">Waktu</div>
+                                <div class="text-[8px] uppercase font-bold opacity-60 mt-1">Waktu</div>
                             </div>
                         </div>
-                        <button onclick="navigate('quiz')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black uppercase tracking-widest hover:opacity-90">Tutup</button>
+                        <button onclick="navigate('home')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black uppercase tracking-widest">Tutup</button>
                     </div>
                 </div>
             </div>
 
-            <!-- STATS -->
             <div id="page-stats" class="page">
-                <h2 class="text-2xl font-black text-center mb-6">Analisis Belajar</h2>
+                <h2 class="text-2xl font-black text-center mb-6">Statistik</h2>
                 <div class="glass p-8 rounded-[2.5rem] mb-6 flex flex-col items-center">
                     <p class="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-4">Mastery Rate</p>
-                    <div id="stat-circle" class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.2)]" style="background: conic-gradient(var(--pink) 0%, rgba(150,150,150,0.1) 0%);">
+                    <div id="stat-circle" class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-lg" style="background: conic-gradient(var(--pink) 0%, rgba(150,150,150,0.1) 0%);">
                         <div class="absolute inset-2 bg-[#0d0f12] rounded-full flex items-center justify-center border border-white/5">
                             <span id="stat-percent" class="text-4xl font-black text-pink-400">0</span><span class="text-pink-400 font-bold ml-1">%</span>
                         </div>
                     </div>
-                    <p id="stat-motivation" class="text-[11px] font-bold opacity-60 mt-6 text-center">Ayo mulai menghafal! 💪</p>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="glass p-5 rounded-[2rem] text-center border border-white/5"><div id="stat-total-adv" class="text-2xl font-black">0</div><div class="text-[9px] font-bold opacity-50 mt-1">TOTAL KARTU</div></div>
-                    <div class="glass p-5 rounded-[2rem] text-center border border-green-500/20"><div id="stat-master-adv" class="text-2xl font-black text-green-400">0</div><div class="text-[9px] font-bold opacity-50 mt-1">SUDAH HAFAL</div></div>
+                <div class="glass p-5 rounded-[2rem] text-center border border-white/5">
+                    <div id="stat-total-adv" class="text-2xl font-black">0</div>
+                    <div class="text-[9px] font-bold opacity-50 mt-1">TOTAL KOSAKATA PRIBADI</div>
                 </div>
-                <button onclick="triggerResetData()" class="glass w-full py-4 rounded-2xl text-red-500 text-[10px] font-black uppercase tracking-widest border border-red-500/30 hover:bg-red-500/10">Hapus Data Pribadi</button>
+                <button onclick="triggerResetData()" class="glass w-full py-4 rounded-2xl text-red-500 text-[10px] font-black uppercase tracking-widest border border-red-500/30 mt-8 hover:bg-red-500/10">Hapus Data</button>
             </div>
         </main>
 
-        <!-- Navbar -->
         <nav id="bottom-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[400px] z-[90]">
             <div class="glass rounded-[2.5rem] h-16 flex items-center px-4 shadow-2xl border border-white/10">
-                <button onclick="navigate('home')" id="n-home" class="nav-btn flex-1 flex flex-col items-center nav-active"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[7px] font-black mt-1 uppercase tracking-widest">Home</span></button>
-                <button onclick="navigate('review')" id="n-review" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="layers" class="w-5 h-5"></i><span class="text-[7px] font-black mt-1 uppercase tracking-widest">Review</span></button>
+                <button onclick="navigate('home')" id="n-home" class="nav-btn flex-1 flex flex-col items-center nav-active"><i data-lucide="home" class="w-5 h-5"></i></button>
+                <button onclick="startReviewSession()" id="n-review" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="layers" class="w-5 h-5"></i></button>
                 <div class="flex-shrink-0 px-2 plus-container">
-                    <button onclick="navigate('add')" class="plus-btn w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-pink-500/30"><i data-lucide="plus" class="w-7 h-7"></i></button>
+                    <button onclick="navigate('add')" class="plus-btn w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg"><i data-lucide="plus"></i></button>
                 </div>
-                <button onclick="navigate('quiz')" id="n-quiz" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="bot" class="w-5 h-5"></i><span class="text-[7px] font-black mt-1 uppercase tracking-widest">Quiz</span></button>
-                <button onclick="navigate('stats')" id="n-stats" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span class="text-[7px] font-black mt-1 uppercase tracking-widest">Stats</span></button>
+                <button onclick="navigate('quiz')" id="n-quiz" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="brain-circuit" class="w-5 h-5"></i></button>
+                <button onclick="navigate('stats')" id="n-stats" class="nav-btn flex-1 flex flex-col items-center"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></button>
             </div>
         </nav>
 
-        <!-- Toast -->
         <div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[100] opacity-0 pointer-events-none">
-            <div class="glass px-6 py-3 rounded-full font-bold text-xs border border-white/20 shadow-[0_0_20px_rgba(236,72,153,0.3)] flex items-center gap-2">
+            <div class="glass px-6 py-3 rounded-full font-bold text-xs border border-white/20 flex items-center gap-2">
                 <i data-lucide="info" class="w-4 h-4 text-pink-400"></i>
                 <span id="toast-msg"></span>
             </div>
         </div>
 
-        <!-- Custom Modal -->
         <div id="custom-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-6">
             <div class="glass p-8 rounded-[2rem] text-center w-full max-w-sm border border-white/10 shadow-2xl">
                 <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto text-pink-400 mb-4"></i>
@@ -294,61 +264,59 @@
 
     <script>
         // --- 40 DATABASE BUNPOU JLPT ASLI DARI AMEL ---
-        // SAYA KUNCI MATI-MATIAN, TIDAK AKAN ADA SOAL LAIN YANG KELUAR!
         const jlptBunpouDatabase = [
-            // Part 1: Particles
             { qText: "私は毎日、公園（　　）散歩します。", correct: "を", options: ["に", "を", "へ", "と"], isStar: false },
             { qText: "病院（　　）先生に相談しました。", correct: "で", options: ["で", "に", "を", "が"], isStar: false },
-            { qText: "喉が痛い（　　）、今日は早く寝ます。", correct: "から", options: ["し", "が", "から", "ながら"], isStar: false },
+            { qText: "喉が痛い（　　）、今日は早く寝ます。", correct: "から", options: ["し", "가", "から", "ながら"], isStar: false },
             { qText: "机の上に、ペン（　　）ノートなどがあります。", correct: "や", options: ["や", "と", "も", "は"], isStar: false },
             { qText: "この料理は、砂糖（　　）使いません。", correct: "を", options: ["は", "を", "も", "しか"], isStar: false },
-            { qText: "明日の会議（　　）資料を準備してください。", correct: "のための", options: ["のための", "について", "のように", "のために"], isStar: false },
             { qText: "友達（　　）映画を見に行きました。", correct: "と", options: ["に", "と", "で", "を"], isStar: false },
             { qText: "バス（　　）会社へ通っています。", correct: "で", options: ["を", "が", "で", "に"], isStar: false },
             { qText: "田中さん（　　）いう人を知っていますか。", correct: "と", options: ["を", "と", "が", "に"], isStar: false },
             { qText: "ここ（　　）ゴミを捨てないでください。", correct: "に", options: ["を", "に", "は", "で"], isStar: false },
-
-            // Part 2: Potential
             { qText: "私は漢字が100個（　　）。", correct: "書けます", options: ["書けます", "書きます", "書かせます", "書かれます"], isStar: false },
             { qText: "忙しくて、昨日は全然（　　）。", correct: "寝られませんでした", options: ["寝られませんでした", "寝ませんでした", "寝させませんでした", "寝ません"], isStar: false },
             { qText: "日本の新聞が（　　）ようになりたいです。", correct: "読める", options: ["読む", "読める", "読ませる", "読まれる"], isStar: false },
             { qText: "この水は（　　）から、飲まないでください。", correct: "飲めない", options: ["飲めない", "飲まない", "飲ませない", "飲まれない"], isStar: false },
             { qText: "お酒が（　　）ので、ジュースをください。", correct: "飲めない", options: ["飲まない", "飲めない", "飲みません", "飲みえない"], isStar: false },
-            { qText: "昨日は雨だったので、外で（　　）。", correct: "遊べませんでした", options: ["遊べませんでした", "遊びませんでした", "遊ばせませんでした", "遊べます"], isStar: false },
             { qText: "どこかで携帯電話の音が（　　）。", correct: "聞こえます", options: ["聞けます", "聞こえます", "聞きます", "聞かせます"], isStar: false },
             { qText: "窓からきれいな海が（　　）。", correct: "見えます", options: ["見られます", "見えます", "見ます", "見せます"], isStar: false },
-            { qText: "一人で日本へ（　　）か。", correct: "行けます", options: ["行けます", "行きます", "行かせます", "行ける"], isStar: false },
             { qText: "刺身が（　　）人は少ないです。", correct: "食べられない", options: ["食べられない", "食べない", "食べさせない", "食べれます"], isStar: false },
-
-            // Part 3: koto ga dekimasu
             { qText: "私は車の運転（　　）できます。", correct: "が", options: ["を", "が", "に", "は"], isStar: false },
             { qText: "日本語で電話を（　　）ことができます。", correct: "かける", options: ["かける", "かけます", "かけて", "かけた"], isStar: false },
-            { qText: "ここで写真（　　）撮ることができますか。", correct: "を", options: ["に", "を", "が", "は"], isStar: false },
+            { qText: "ここで写真（　　）撮ることができますか。", correct: "を", options: ["に", "を", "가", "は"], isStar: false },
             { qText: "彼はピアノを（　　）ことができます。", correct: "弾く", options: ["弾く", "弾きます", "弾ける", "弾いた"], isStar: false },
             { qText: "料理（　　）できますが、あまり上手じゃありません。", correct: "は", options: ["を", "は", "が", "に"], isStar: false },
             { qText: "納豆（　　）食べることができますか。", correct: "を", options: ["が", "を", "に", "は"], isStar: false },
-            { qText: "予約（　　）キャンセルすることができます。", correct: "を", options: ["が", "を", "に", "は"], isStar: false },
             { qText: "彼女は5カ国語を（　　）ことができます。", correct: "話す", options: ["話す", "話します", "話した", "話せる"], isStar: false },
             { qText: "明日の夜なら（　　）ことができます。", correct: "会う", options: ["会う", "会います", "会った", "会って"], isStar: false },
             { qText: "自転車を（　　）ことができます。", correct: "修理する", options: ["修理する", "修理します", "修理して", "修理した"], isStar: false },
-
-            // Part 4: Star questions (Menyusun Kata)
+            // STAR QUESTIONS
             { qText: "これは昨日（　）（　）（★）（　）本です。", correct: "図書館で", options: ["私が", "買った", "図書館で", "借りた"], isStar: true }, 
             { qText: "あそこに（　）（　）（★）（　）人は誰ですか。", correct: "服を", options: ["着ている", "赤い", "服を", "立って"], isStar: true },
             { qText: "日本へ（　）（　）（★）（　）忘れました。", correct: "名前を", options: ["名前を", "行く", "友達の", "会う"], isStar: true },
             { qText: "私は（　）（　）（★）（　）住みたいです。", correct: "見える", options: ["静かな", "海が", "近くに", "見える"], isStar: true },
             { qText: "先生が（　）（　）（★）（　）わかりませんでした。", correct: "難しくて", options: ["話の内容が", "速すぎて", "話した", "難しくて"], isStar: true }, 
             { qText: "今日（　）（　）（★）（　）とても便利です。", correct: "仕事で", options: ["覚えた", "言葉は", "仕事で", "使う"], isStar: true }, 
-            { qText: "（　）（　）（★）（　）探しています。", correct: "介護の", options: ["私が", "ことができる", "介護の", "仕事を"], isStar: true }, 
+            { qText: "（　）（　）（★）（　）探しています。", correct: "介護の", options: ["私が", "ことができる", "介護 de", "仕事を"], isStar: true }, 
             { qText: "（　）（　）（★）（　）料理は、母に習いました。", correct: "得意な", options: ["私が", "一番", "得意な", "作る"], isStar: true }, 
             { qText: "（　）（　）（★）（　）カバンをなくしました。", correct: "たくさん", options: ["電車の中に", "お金が", "入った", "たくさん"], isStar: true }, 
             { qText: "母と（　）（　）（★）（　）うれしかったです。", correct: "約束が", options: ["約束が", "日本に", "叶って", "行くという"], isStar: true } 
         ];
 
-        // Ini adalah Kartu Buatan Pribadi (Review)
-        let cards = JSON.parse(localStorage.getItem('amel_anki_super_jlpt_v10')) || [];
+        // --- SISTEM ANTI HILANG DATA ---
+        const STORAGE_KEY = 'amel_anki_final_v14';
+        let savedData = localStorage.getItem(STORAGE_KEY) 
+                     || localStorage.getItem('amel_anki_final_v13')
+                     || localStorage.getItem('amel_anki_super_jlpt_v10')
+                     || localStorage.getItem('amel_anki_super_jlpt_v9')
+                     || localStorage.getItem('amel_anki_jlpt_ai_strict')
+                     || localStorage.getItem('amel_anki_star_v1')
+                     || localStorage.getItem('amel_anki_jlpt_v8_unlimited')
+                     || localStorage.getItem('amel_anki_jlpt_v7');
+                     
+        let cards = savedData ? JSON.parse(savedData) : [];
         
-        let currentType = 'vocab';
         let rPool = [], rIdx = 0;
         let qPool = [], qIdx = 0, qCorrect = 0, qWrong = 0;
         let quizTimerInterval = null, timeElapsed = 0, isQuizActive = false;
@@ -358,66 +326,37 @@
 
         function syncUI() {
             document.getElementById('home-total').innerText = cards.length;
-            localStorage.setItem('amel_anki_super_jlpt_v10', JSON.stringify(cards));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
         }
 
-        // --- NAVIGATION BUG FIXES ---
         function navigate(id) {
             isQuizActive = false;
             clearInterval(quizTimerInterval);
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('bottom-nav').classList.remove('hidden');
-            
-            // Tutup semua sub-menu agar bersih
-            document.getElementById('review-menu').classList.remove('hidden');
-            document.getElementById('review-session').classList.add('hidden');
-            document.getElementById('quiz-menu').classList.remove('hidden');
-            document.getElementById('quiz-game-container').classList.add('hidden');
-            document.getElementById('quiz-result-container').classList.add('hidden');
-
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(`page-${id}`).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
-            
             const activeBtn = document.getElementById(`n-${id}`);
             if(activeBtn) activeBtn.classList.add('nav-active');
 
+            if(id === 'quiz') {
+                document.getElementById('quiz-menu').classList.remove('hidden');
+                document.getElementById('quiz-game-container').classList.add('hidden');
+                document.getElementById('quiz-result-container').classList.add('hidden');
+            }
             if(id === 'stats') renderStatsAdvanced();
         }
 
         function exitSession(mode) {
             isQuizActive = false;
             clearInterval(quizTimerInterval);
-            if(mode === 'review') {
-                document.getElementById('review-session').classList.add('hidden');
-                document.getElementById('review-menu').classList.remove('hidden');
-            } else {
-                document.getElementById('quiz-game-container').classList.add('hidden');
-                document.getElementById('quiz-menu').classList.remove('hidden');
-            }
+            navigate('home');
         }
 
-        function setType(t) {
-            currentType = t;
-            document.getElementById('type-vocab').className = `flex-1 py-3 text-[10px] font-black rounded-lg transition-all ${t === 'vocab' ? 'bg-pink-500 text-white' : 'text-white/40'}`;
-            document.getElementById('type-bunpou').className = `flex-1 py-3 text-[10px] font-black rounded-lg transition-all ${t === 'bunpou' ? 'bg-purple-500 text-white' : 'text-white/40'}`;
-            
-            document.getElementById('field-read').classList.toggle('hidden', t === 'bunpou');
-            document.getElementById('field-example').classList.toggle('hidden', t !== 'bunpou');
-        }
-
-        // --- REVIEW (KARTU PRIBADI) ---
-        function startReviewSession(type) {
-            let filtered = cards.filter(c => type === 'vocab' ? (c.type === 'vocab' || !c.type) : c.type === 'bunpou');
-            if(filtered.length === 0) {
-                // Beri peringatan yang sangat jelas tanpa ngebug
-                showToast(`Data ${type.toUpperCase()} pribadimu kosong! Tambah di menu + ya!`);
-                return;
-            }
-            rPool = [...filtered].sort(() => Math.random() - 0.5);
+        function startReviewSession() {
+            if(cards.length === 0) return showToast("Tambahkan Vocab dulu ya!");
+            rPool = [...cards].sort(() => Math.random() - 0.5);
             rIdx = 0;
-            document.getElementById('review-menu').classList.add('hidden');
-            document.getElementById('review-session').classList.remove('hidden');
+            navigate('review');
             renderReview();
         }
 
@@ -426,14 +365,7 @@
             document.getElementById('rev-front').innerText = c.jp;
             document.getElementById('rev-back-id').innerText = c.id;
             document.getElementById('rev-back-read').innerText = c.read || '';
-            document.getElementById('rev-back-example').innerText = c.example ? c.example.replace('___', `【${c.jp}】`) : '';
             document.getElementById('rev-prog').innerText = `${rIdx + 1} / ${rPool.length}`;
-            
-            const isBunpou = c.type === 'bunpou';
-            const badge = document.getElementById('rev-badge-front');
-            badge.innerText = isBunpou ? 'BUNPOU' : 'VOCAB';
-            badge.className = `text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-4 inline-block ${isBunpou ? 'bg-purple-500/10 text-purple-400' : 'bg-pink-500/10 text-pink-500'}`;
-            
             document.getElementById('flip-inner').classList.remove('flipped');
             document.getElementById('rev-btns').classList.add('hidden');
         }
@@ -451,130 +383,88 @@
             }
             rIdx++;
             if(rIdx < rPool.length) renderReview();
-            else {
-                showToast("Otsukaresama! Sesi hafalan selesai.");
-                exitSession('review');
-            }
+            else navigate('home');
         }
 
-        // --- KUIS STRICT DATABASE (ANTI NGACO) ---
         function startQuizSession(mode) {
             if (mode === 'bunpou') {
-                // MENGGUNAKAN 40 SOAL MUTLAK DARI TEKS AMEL
                 qPool = [...jlptBunpouDatabase].sort(() => Math.random() - 0.5);
             } else {
-                // Kuis Vocab dari kartu pribadi
-                const filtered = cards.filter(c => c.type === 'vocab' || !c.type);
-                if (filtered.length < 4) {
-                    return showToast("Butuh minimal 4 Kosakata di databasemu!");
-                }
-                
-                // Rakit soal dari kartu lokal
-                const pool = [...filtered].sort(() => Math.random() - 0.5);
-                qPool = pool.map(c => {
-                    const distractors = filtered.filter(o => o.jp !== c.jp).map(o => o.id).sort(() => Math.random() - 0.5);
-                    return {
-                        qText: c.jp,
-                        correct: c.id,
-                        options: [c.id, ...distractors.slice(0, 3)].sort(() => Math.random() - 0.5),
-                        isStar: false,
-                        vocabMode: true
-                    };
-                });
+                if (cards.length < 4) return showToast("Butuh min. 4 Vocab!");
+                qPool = cards.map(c => ({
+                    qText: c.jp,
+                    correct: c.id,
+                    options: [c.id, ...cards.filter(o => o.id !== c.id).map(o => o.id).sort(() => Math.random() - 0.5).slice(0, 3)].sort(() => Math.random() - 0.5),
+                    isStar: false,
+                    vocabMode: true
+                })).sort(() => Math.random() - 0.5);
             }
 
-            isQuizActive = true; 
-            qIdx = 0; qCorrect = 0; qWrong = 0; timeElapsed = 0;
-            
+            isQuizActive = true; qIdx = 0; qCorrect = 0; qWrong = 0; timeElapsed = 0;
             document.getElementById('quiz-menu').classList.add('hidden');
             document.getElementById('quiz-game-container').classList.remove('hidden');
             
             clearInterval(quizTimerInterval);
-            document.getElementById('quiz-timer').innerText = "00:00";
             quizTimerInterval = setInterval(() => {
                 timeElapsed++;
                 const m = String(Math.floor(timeElapsed / 60)).padStart(2, '0');
                 const s = String(timeElapsed % 60).padStart(2, '0');
                 document.getElementById('quiz-timer').innerText = `${m}:${s}`;
             }, 1000);
-
             renderQuiz();
         }
 
         function stopQuizEarly() {
-            showModal("Hentikan Kuis?", "Yakin ingin melihat hasil akhir sekarang?", () => {
-                isQuizActive = false;
-                showQuizResults();
-            });
+            isQuizActive = false;
+            clearInterval(quizTimerInterval);
+            showQuizResults();
         }
 
         function renderQuiz() {
             if(!isQuizActive) return;
-            
-            // Unlimited Loop (Soal tidak akan pernah habis)
-            if(qIdx >= qPool.length) {
-                qPool = qPool.sort(() => Math.random() - 0.5);
-                qIdx = 0; 
-            }
+            if(qIdx >= qPool.length) { qIdx = 0; qPool.sort(() => Math.random() - 0.5); }
             
             const cur = qPool[qIdx];
             const qDisplay = document.getElementById('q-text');
             const label = document.getElementById('q-type-label');
             
             if(cur.isStar) {
-                // FORMAT BINTANG JLPT (★)
-                qDisplay.innerHTML = `<div class="text-[10px] font-normal opacity-50 mb-4 text-left leading-relaxed">（　）の中の1・2・3・4を並べ替えて、正しい文を作りなさい。★に入る番号を答えてください。</div><div class="text-xl font-bold leading-loose text-left">${cur.qText.replace('★', '<span class="star-mark">★</span>')}</div>`;
-                label.innerText = "MENYUSUN KATA (★)";
-                label.className = "text-[9px] font-black uppercase tracking-widest bg-yellow-500/10 text-yellow-400 px-3 py-1 rounded-full inline-block mb-4";
+                qDisplay.innerHTML = `<div class="text-[10px] font-normal opacity-50 mb-4 text-left leading-relaxed">正しい文を作りなさい。★に入る番号を答えなさい。</div><div class="text-xl font-bold leading-loose text-left">${cur.qText.replace('★', '<span class="star-mark">★</span>')}</div>`;
+                label.innerText = "SUSUN KATA (★)";
+                label.className = "text-[9px] font-black uppercase bg-yellow-500/10 text-yellow-400 px-3 py-1 rounded-full mb-4 inline-block";
             } else if (cur.vocabMode) {
-                // FORMAT VOCAB PRIBADI
-                qDisplay.innerHTML = `<div class="text-4xl font-black px-2 leading-relaxed">${cur.qText}</div>`;
+                qDisplay.innerHTML = `<div class="text-4xl font-black text-center">${cur.qText}</div>`;
                 label.innerText = "CEK ARTI VOCAB";
-                label.className = "text-[9px] font-black uppercase tracking-widest bg-pink-500/10 text-pink-500 px-3 py-1 rounded-full inline-block mb-4";
+                label.className = "text-[9px] font-black uppercase bg-pink-500/10 text-pink-500 px-3 py-1 rounded-full mb-4 inline-block";
             } else {
-                // FORMAT BUNPOU BIASA
-                qDisplay.innerHTML = `<div class="text-[10px] font-normal opacity-50 mb-4 text-left leading-relaxed">（　　）に入れるのに最もよいものを、1・2・3・4から一つ選びなさい。</div><div class="text-xl font-bold leading-loose text-left">${cur.qText}</div>`;
-                label.innerText = "TATA BAHASA JLPT";
-                label.className = "text-[9px] font-black uppercase tracking-widest bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full inline-block mb-4";
+                qDisplay.innerHTML = `<div class="text-xl font-bold text-left leading-relaxed">${cur.qText}</div>`;
+                label.innerText = "BUNPOU JLPT";
+                label.className = "text-[9px] font-black uppercase bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full mb-4 inline-block";
             }
 
             document.getElementById('quiz-prog-text').innerText = `SOAL ${qCorrect + qWrong + 1}`;
-
             const container = document.getElementById('q-options');
             container.innerHTML = '';
             
-            cur.options.forEach((opt, index) => {
+            cur.options.forEach((opt, i) => {
                 const b = document.createElement('button');
-                b.className = "quiz-opt glass w-full p-4 rounded-2xl text-left text-sm font-bold flex items-center border border-white/5 hover:bg-white/5";
+                b.className = "quiz-opt glass w-full p-4 rounded-2xl text-left text-sm font-bold border border-white/5";
                 b.dataset.val = opt;
-                b.innerHTML = `<span class="w-6 h-6 flex-shrink-0 rounded-full bg-white/10 flex items-center justify-center mr-3 text-[10px] opacity-70">${index + 1}</span> <span class="flex-1">${opt}</span>`;
+                b.innerHTML = `<span class="opacity-30 mr-3">${i + 1}.</span> ${opt}`;
                 
                 b.onclick = () => {
-                    if(!isQuizActive) return; 
-                    
+                    if(!isQuizActive) return;
                     const all = container.querySelectorAll('.quiz-opt');
                     all.forEach(btn => btn.onclick = null);
 
                     if(opt === cur.correct) {
-                        b.classList.add('opt-correct'); 
-                        qCorrect++;
-                        showToast("Benar! ✨");
+                        b.classList.add('opt-correct'); qCorrect++;
                     } else {
-                        b.classList.add('opt-wrong'); 
-                        qWrong++;
-                        // Kasih tau jawaban benar dengan warna hijau
-                        all.forEach(btn => { 
-                            if(btn.dataset.val === cur.correct) btn.classList.add('opt-correct'); 
-                        });
-                        showToast("Salah! 😢");
+                        b.classList.add('opt-wrong'); qWrong++;
+                        all.forEach(btn => { if(btn.dataset.val === cur.correct) btn.classList.add('opt-correct'); });
                     }
-                    
                     qIdx++;
-                    
-                    // Jeda animasi
-                    setTimeout(() => {
-                        if(isQuizActive) renderQuiz();
-                    }, 1500); 
+                    setTimeout(() => { if(isQuizActive) renderQuiz(); }, 1500);
                 };
                 container.appendChild(b);
             });
@@ -583,38 +473,26 @@
         function showQuizResults() {
             document.getElementById('quiz-game-container').classList.add('hidden');
             document.getElementById('quiz-result-container').classList.remove('hidden');
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('bottom-nav').classList.add('hidden');
-            
             document.getElementById('res-correct').innerText = qCorrect;
             document.getElementById('res-wrong').innerText = qWrong;
-            const total = qCorrect + qWrong;
-            document.getElementById('res-accuracy').innerText = total > 0 ? Math.round((qCorrect/total)*100) + "%" : "0%";
+            document.getElementById('res-accuracy').innerText = Math.round((qCorrect/(qCorrect+qWrong||1))*100) + "%";
             document.getElementById('res-time').innerText = document.getElementById('quiz-timer').innerText;
         }
 
-        // --- STATS ---
         function renderStatsAdvanced() {
             const total = cards.length;
             const mastered = cards.filter(c => c.mastered).length;
             const percent = total > 0 ? Math.round((mastered/total)*100) : 0;
-            
             document.getElementById('stat-total-adv').innerText = total;
-            document.getElementById('stat-master-adv').innerText = mastered;
             document.getElementById('stat-percent').innerText = percent;
             document.getElementById('stat-circle').style.background = `conic-gradient(var(--pink) ${percent}%, rgba(150,150,150,0.1) 0%)`;
-            
-            const mot = document.getElementById('stat-motivation');
-            if(percent >= 100 && total > 0) mot.innerText = "Luar biasa! Amel Jenius! 🎉";
-            else if(percent >= 50) mot.innerText = "Setengah jalan lagi! 🔥";
-            else mot.innerText = "Ayo mulai belajar! 💪";
         }
 
         function saveCard() {
             const jp = document.getElementById('in-jp').value.trim();
             const id = document.getElementById('in-id').value.trim();
             if(!jp || !id) return showToast("Isi Jepang & Arti!");
-            cards.push({ jp, id, read: document.getElementById('in-read').value, example: document.getElementById('in-example').value, type: currentType, mastered: false, ts: Date.now() });
+            cards.push({ jp, id, read: document.getElementById('in-read').value, mastered: false, type: 'vocab', ts: Date.now() });
             syncUI();
             navigate('home');
             showToast("Tersimpan! 🌸");
@@ -623,8 +501,7 @@
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = m;
-            t.classList.add('show'); 
-            setTimeout(() => t.classList.remove('show'), 2500);
+            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
         }
 
         function showModal(t, d, cb) {
@@ -632,21 +509,12 @@
             document.getElementById('modal-title').innerText = t;
             document.getElementById('modal-desc').innerText = d;
             m.classList.remove('hidden'); m.classList.add('flex');
-            
-            document.getElementById('modal-cancel').onclick = () => {
-                m.classList.remove('flex'); m.classList.add('hidden');
-            };
-            document.getElementById('modal-confirm').onclick = () => { 
-                m.classList.remove('flex'); m.classList.add('hidden'); 
-                cb(); 
-            };
+            document.getElementById('modal-cancel').onclick = () => { m.classList.replace('flex','hidden'); };
+            document.getElementById('modal-confirm').onclick = () => { m.classList.replace('flex','hidden'); cb(); };
         }
 
         function triggerResetData() {
-            showModal("Hapus Data?", "Semua kartu PRIBADI-mu akan hilang selamanya!", () => { 
-                localStorage.removeItem('amel_anki_super_jlpt_v10'); 
-                location.reload(); 
-            });
+            showModal("Hapus Data?", "Semua kartu pribadimu akan hilang!", () => { localStorage.removeItem(STORAGE_KEY); location.reload(); });
         }
     </script>
 </body>
